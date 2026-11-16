@@ -79,10 +79,12 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
       <div className="flex flex-col">
         {/* Brand Header */}
         <div className="h-16 px-6 flex items-center gap-3 border-b border-surface-container/60">
-          <img src="/logo-qph.svg" className="w-8 h-8 rounded-md object-contain" alt="queplaneshoy logo" />
+          <div className="w-8 h-8 rounded-lg bg-electric-indigo flex items-center justify-center text-white font-extrabold text-xs shadow-xs shrink-0 tracking-tight">
+            QPH
+          </div>
           <div className="flex flex-col">
             <span className="font-extrabold tracking-tight text-on-surface leading-none text-base">
-              queplanes<span className="text-electric-indigo">hoy</span>
+              queplan<span className="text-electric-indigo">hoy</span>
             </span>
             <span className="text-[10px] tracking-wider uppercase text-on-surface-variant font-semibold">
               Backoffice Suite
