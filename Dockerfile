@@ -13,9 +13,11 @@ RUN npm ci
 FROM node:22-alpine AS builder
 WORKDIR /app
 
-# Inyección de variables públicas en tiempo de build
-ARG NEXT_PUBLIC_API_URL=/api
+# Argumentos de build con placeholders por defecto
+ARG NEXT_PUBLIC_API_URL=""
+ARG NEXT_PUBLIC_WEB_URL=""
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_WEB_URL=$NEXT_PUBLIC_WEB_URL
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .

@@ -29,6 +29,16 @@ import {
   Ticket,
   BadgePercent,
   Info,
+  ExternalLink,
+  Mail,
+  Phone,
+  FileText,
+  ShieldCheck,
+  Globe,
+  Tag,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export function EventsApprovalScreen() {
@@ -57,6 +67,7 @@ export function EventsApprovalScreen() {
   const [observeReason, setObserveReason] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   // Debounce para búsqueda
   useEffect(() => {
@@ -153,7 +164,7 @@ export function EventsApprovalScreen() {
               </span>
             </div>
             <h1 className="text-2xl lg:text-3xl font-extrabold text-on-surface tracking-tight">
-              Aprobación y Moderación de Eventos
+              Gestión de Eventos
             </h1>
           </div>
 
@@ -426,9 +437,12 @@ export function EventsApprovalScreen() {
                       <td className="py-3 px-4 text-right">
                         <div className="inline-flex items-center justify-end gap-1">
                           <button
-                            onClick={() => setSelectedEvent(ev)}
+                            onClick={() => {
+                              setSelectedEvent(ev);
+                              setShowFullDescription(false);
+                            }}
                             className="p-1 rounded-lg text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors cursor-pointer"
-                            title="Revisar expediente y tarifario"
+                            title="Revisar expediente completo"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
@@ -494,36 +508,43 @@ export function EventsApprovalScreen() {
         </div>
       </div>
 
-      {/* Drawer Detalle de Evento con Tarifario Completo y Observaciones */}
+      {/* Drawer Detalle de Evento con Expediente Completo */}
       {selectedEvent && (
         <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex justify-end">
-          <div className="w-full max-w-lg bg-surface-container-lowest h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+          <div className="w-full max-w-xl bg-surface-container-lowest h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+            {/* Header del Drawer */}
             <div className="p-6 border-b border-surface-container flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 min-w-0">
                 <div
-                  className={`w-11 h-11 rounded-full ${selectedEvent.avatarBgColor} text-white flex items-center justify-center font-bold text-sm shadow-sm`}
+                  className={`w-11 h-11 rounded-full ${selectedEvent.avatarBgColor} text-white flex items-center justify-center font-bold text-sm shadow-sm flex-shrink-0`}
                 >
                   {selectedEvent.avatarInitials}
                 </div>
-                <div className="min-w-0 max-w-[320px]">
-                  <h3 className="font-bold text-base text-on-surface leading-tight truncate">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-primary font-bold uppercase tracking-wider bg-primary/10 px-2 py-0.5 rounded">
+                      {selectedEvent.category}
+                    </span>
+                    <span className="text-[10px] text-on-surface-variant font-mono">
+                      #{selectedEvent.id}
+                    </span>
+                  </div>
+                  <h3 className="font-bold text-base text-on-surface leading-tight truncate mt-0.5">
                     {selectedEvent.title}
                   </h3>
-                  <span className="text-xs text-primary font-semibold uppercase tracking-wider">
-                    {selectedEvent.category} • #{selectedEvent.id}
-                  </span>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant cursor-pointer"
+                className="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container flex items-center justify-center text-on-surface-variant cursor-pointer flex-shrink-0 ml-2"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Contenido scrolleable del Drawer */}
             <div className="flex-1 overflow-y-auto p-6 space-y-5 text-xs">
-              {/* Alerta si el evento tiene observaciones previas */}
+              {/* Alerta de Observación previa */}
               {selectedEvent.observationReason && (
                 <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 space-y-1">
                   <div className="flex items-center gap-1.5 font-bold uppercase tracking-wider text-[11px] text-rose-700">
@@ -536,28 +557,257 @@ export function EventsApprovalScreen() {
                 </div>
               )}
 
-              {/* Datos de Organizador */}
+              {/* 1. Portada del Evento (Link directo) y Landing Page */}
+              <div className="p-4 rounded-xl bg-surface-container-low border border-surface-container space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center gap-1.5">
+                    <Globe className="w-3.5 h-3.5 text-primary" />
+                    Portada & Landing Page
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      selectedEvent.hasLandingPage
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-surface-container-high text-on-surface-variant'
+                    }`}
+                  >
+                    {selectedEvent.hasLandingPage ? 'Aplica Landing Dedicada' : 'Landing Estándar'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  {selectedEvent.bannerImageUrl ? (
+                    <a
+                      href={selectedEvent.bannerImageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container hover:border-primary text-primary font-semibold transition-all group"
+                    >
+                      <span className="truncate text-xs">Ver Portada Original</span>
+                      <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                    </a>
+                  ) : (
+                    <div className="p-2.5 rounded-lg bg-surface-container text-on-surface-variant text-[11px]">
+                      Sin portada adjunta
+                    </div>
+                  )}
+
+                  {selectedEvent.landingUrl ? (
+                    <a
+                      href={selectedEvent.landingUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container hover:border-primary text-primary font-semibold transition-all group"
+                    >
+                      <span className="truncate text-xs">Previsualizar Landing</span>
+                      <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 ml-1 group-hover:translate-x-0.5 transition-transform" />
+                    </a>
+                  ) : (
+                    <div className="p-2.5 rounded-lg bg-surface-container text-on-surface-variant text-[11px]">
+                      Landing no disponible
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* 2. Descripción del Evento */}
+              <div className="p-4 rounded-xl bg-surface-container-low border border-surface-container space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center gap-1.5">
+                    <FileText className="w-3.5 h-3.5 text-primary" />
+                    Descripción del Evento
+                  </span>
+                  {selectedEvent.description && selectedEvent.description.length > 200 && (
+                    <button
+                      type="button"
+                      onClick={() => setShowFullDescription(!showFullDescription)}
+                      className="text-[11px] text-primary hover:underline font-semibold cursor-pointer"
+                    >
+                      {showFullDescription ? 'Ver menos' : 'Ver más...'}
+                    </button>
+                  )}
+                </div>
+                <div className="text-on-surface-variant leading-relaxed text-[11px] whitespace-pre-line">
+                  {selectedEvent.description ? (
+                    showFullDescription || selectedEvent.description.length <= 200 ? (
+                      selectedEvent.description
+                    ) : (
+                      `${selectedEvent.description.slice(0, 200)}...`
+                    )
+                  ) : (
+                    <span className="italic text-on-surface-variant/70">Sin descripción registrada.</span>
+                  )}
+                </div>
+              </div>
+
+              {/* 3. Datos del Organizador */}
               <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
                 <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center gap-1.5">
                   <Building2 className="w-3.5 h-3.5 text-primary" />
                   Datos del Organizador
                 </h4>
-                <div className="flex justify-between py-1 border-b border-surface-container">
-                  <span className="text-on-surface-variant">Razón Social</span>
-                  <span className="font-bold text-on-surface">{selectedEvent.organizerName}</span>
-                </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-on-surface-variant">RUC Tributario</span>
-                  <span className="font-mono font-bold text-on-surface">{selectedEvent.organizerDocumentNumber}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
+                    <span className="text-on-surface-variant text-[10px] block">Razón Social / Promotor</span>
+                    <span className="font-bold text-on-surface text-xs block truncate">{selectedEvent.organizerName}</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
+                    <span className="text-on-surface-variant text-[10px] block">RUC / DNI Tributario</span>
+                    <span className="font-mono font-bold text-on-surface text-xs block">{selectedEvent.organizerDocumentNumber}</span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
+                    <span className="text-on-surface-variant text-[10px] block flex items-center gap-1">
+                      <Mail className="w-3 h-3" /> Correo Electrónico
+                    </span>
+                    <span className="font-medium text-on-surface text-xs block truncate">
+                      {selectedEvent.organizerEmail || 'No especificado'}
+                    </span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
+                    <span className="text-on-surface-variant text-[10px] block flex items-center gap-1">
+                      <Phone className="w-3 h-3" /> Teléfono de Contacto
+                    </span>
+                    <span className="font-medium text-on-surface text-xs block">
+                      {selectedEvent.organizerPhone || 'No especificado'}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              {/* Tarifario Oficial y Comisiones QPH */}
+              {/* 4. Ubicación y Recinto */}
+              <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center gap-1.5">
+                    <MapPin className="w-3.5 h-3.5 text-primary" />
+                    Ubicación y Recinto
+                  </h4>
+                  {selectedEvent.googleMapsUrl && (
+                    <a
+                      href={selectedEvent.googleMapsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] text-primary hover:underline font-bold flex items-center gap-1"
+                    >
+                      Abrir en Google Maps <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+                <div className="space-y-2 pt-1">
+                  <div className="flex justify-between py-1 border-b border-surface-container">
+                    <span className="text-on-surface-variant">Recinto / Establecimiento</span>
+                    <span className="font-semibold text-on-surface">{selectedEvent.venueName}</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-surface-container">
+                    <span className="text-on-surface-variant">Ciudad / Ubigeo</span>
+                    <span className="font-semibold text-on-surface">{selectedEvent.venueCity}</span>
+                  </div>
+                  {selectedEvent.venueAddress && (
+                    <div className="flex justify-between py-1 border-b border-surface-container">
+                      <span className="text-on-surface-variant">Dirección Física</span>
+                      <span className="font-medium text-on-surface text-right">{selectedEvent.venueAddress}</span>
+                    </div>
+                  )}
+                  {selectedEvent.venueAddressReference && (
+                    <div className="flex justify-between py-1 border-b border-surface-container">
+                      <span className="text-on-surface-variant">Referencia</span>
+                      <span className="font-medium text-on-surface text-right">{selectedEvent.venueAddressReference}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between py-1">
+                    <span className="text-on-surface-variant">Aforo Total Declarado</span>
+                    <span className="font-mono font-bold text-on-surface">{selectedEvent.capacityFormatted} personas</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Normas, Salvaguardas y Legales */}
+              <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
+                <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                  Normas, Salvaguardas y Legales
+                </h4>
+                <div className="space-y-2 pt-1">
+                  <div className="flex justify-between py-1 border-b border-surface-container">
+                    <span className="text-on-surface-variant">Restricción de Edad</span>
+                    <span className="font-bold text-on-surface">
+                      {selectedEvent.ageRestriction || 'Apto para todo público'}
+                    </span>
+                  </div>
+                  {selectedEvent.entryRequirements && (
+                    <div className="py-1 border-b border-surface-container">
+                      <span className="text-on-surface-variant block mb-0.5">Requisitos de Ingreso</span>
+                      <span className="text-on-surface font-medium block">{selectedEvent.entryRequirements}</span>
+                    </div>
+                  )}
+                  {selectedEvent.openingHoursComment && (
+                    <div className="py-1 border-b border-surface-container">
+                      <span className="text-on-surface-variant block mb-0.5">Horarios de Apertura de Puertas</span>
+                      <span className="text-on-surface font-medium block">{selectedEvent.openingHoursComment}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between py-1 items-center">
+                    <span className="text-on-surface-variant">Términos y Condiciones</span>
+                    {selectedEvent.termsAndConditionsUrl ? (
+                      <a
+                        href={selectedEvent.termsAndConditionsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline font-bold text-xs flex items-center gap-1"
+                      >
+                        Ver Documento PDF <ExternalLink className="w-3 h-3" />
+                      </a>
+                    ) : (
+                      <span className="text-on-surface-variant/70 italic">No adjuntado</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* 6. Fechas y Shows Programados */}
+              <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
+                <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-primary" />
+                    Fechas y Funciones (Shows)
+                  </span>
+                  <span className="text-[10px] text-primary font-mono lowercase">
+                    {selectedEvent.shows.length} funciones
+                  </span>
+                </h4>
+                <div className="space-y-2 pt-1">
+                  {selectedEvent.shows.length === 0 ? (
+                    <div className="p-3 text-center text-on-surface-variant text-[11px] bg-surface-container rounded-lg">
+                      No hay shows registrados. Primera fecha: {selectedEvent.eventDateFormatted}
+                    </div>
+                  ) : (
+                    selectedEvent.shows.map((show, idx) => (
+                      <div
+                        key={idx}
+                        className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container flex items-center justify-between"
+                      >
+                        <div>
+                          <span className="font-bold text-on-surface text-xs block">{show.name}</span>
+                          <span className="text-[10px] text-on-surface-variant flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {show.startTimeFormatted}
+                          </span>
+                        </div>
+                        {show.durationHours && (
+                          <span className="px-2 py-0.5 rounded bg-surface-container text-on-surface font-mono text-[10px]">
+                            {show.durationHours}h duración
+                          </span>
+                        )}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* 7. Tarifario Oficial y Comisiones QPH por Zona */}
               <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
                 <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center justify-between">
                   <span className="flex items-center gap-1.5">
                     <BadgePercent className="w-3.5 h-3.5 text-primary" />
-                    Tarifario & Comisiones QPH por Zona
+                    Zonas y Tarifario Oficial
                   </span>
                   <span className="text-[10px] text-primary font-mono lowercase">
                     {selectedEvent.zones.length} zonas
@@ -609,27 +859,85 @@ export function EventsApprovalScreen() {
                 </div>
               </div>
 
-              {/* Capacidad y Recinto */}
+              {/* 8. Cupones de Descuento */}
               <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
-                <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center gap-1.5">
-                  <Ticket className="w-3.5 h-3.5 text-primary" />
-                  Recinto y Funciones
+                <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Tag className="w-3.5 h-3.5 text-primary" />
+                    Cupones de Descuento
+                  </span>
+                  <span className="text-[10px] text-primary font-mono lowercase">
+                    {selectedEvent.coupons.length} registrados
+                  </span>
                 </h4>
-                <div className="flex justify-between py-1 border-b border-surface-container">
-                  <span className="text-on-surface-variant">Aforo Total Declarado</span>
-                  <span className="font-bold text-on-surface font-mono">{selectedEvent.capacityFormatted}</span>
+                <div className="space-y-2 pt-1">
+                  {selectedEvent.coupons.length === 0 ? (
+                    <div className="p-3 text-center text-on-surface-variant text-[11px] bg-surface-container rounded-lg">
+                      No se han registrado cupones promocionales.
+                    </div>
+                  ) : (
+                    selectedEvent.coupons.map((coupon, idx) => (
+                      <div
+                        key={idx}
+                        className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">
+                            {coupon.code}
+                          </span>
+                          <span className="text-[11px] text-on-surface">
+                            {coupon.discountType === 'percentage'
+                              ? `${coupon.discountValue}% OFF`
+                              : `S/ ${coupon.discountValue.toFixed(2)} OFF`}
+                          </span>
+                        </div>
+                        {coupon.maxUses && (
+                          <span className="text-[10px] text-on-surface-variant font-mono">
+                            Límite: {coupon.maxUses} usos
+                          </span>
+                        )}
+                      </div>
+                    ))
+                  )}
                 </div>
-                <div className="flex justify-between py-1 border-b border-surface-container">
-                  <span className="text-on-surface-variant">Recinto</span>
-                  <span className="font-semibold text-on-surface">{selectedEvent.venueName} ({selectedEvent.venueCity})</span>
-                </div>
-                <div className="flex justify-between py-1">
-                  <span className="text-on-surface-variant">Fecha Primera Función</span>
-                  <span className="font-semibold text-on-surface">{selectedEvent.eventDateFormatted}</span>
+              </div>
+
+              {/* 9. Preguntas Frecuentes (FAQs) */}
+              <div className="space-y-3 bg-surface-container-low p-4 rounded-xl border border-surface-container">
+                <h4 className="font-bold uppercase tracking-wider text-[11px] text-on-surface flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-primary" />
+                    Preguntas Frecuentes (FAQs)
+                  </span>
+                  <span className="text-[10px] text-primary font-mono lowercase">
+                    {selectedEvent.faqs.length} preguntas
+                  </span>
+                </h4>
+                <div className="space-y-2 pt-1">
+                  {selectedEvent.faqs.length === 0 ? (
+                    <div className="p-3 text-center text-on-surface-variant text-[11px] bg-surface-container rounded-lg">
+                      No se han configurado FAQs para este evento.
+                    </div>
+                  ) : (
+                    selectedEvent.faqs.map((faq, idx) => (
+                      <div
+                        key={idx}
+                        className="p-3 rounded-lg bg-surface-container-lowest border border-surface-container space-y-1"
+                      >
+                        <span className="font-bold text-on-surface text-xs block">
+                          {faq.question}
+                        </span>
+                        <p className="text-on-surface-variant text-[11px] leading-relaxed">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             </div>
 
+            {/* Footer de Acciones del Drawer */}
             <div className="p-5 bg-surface border-t border-surface-container flex items-center justify-between">
               <button
                 type="button"

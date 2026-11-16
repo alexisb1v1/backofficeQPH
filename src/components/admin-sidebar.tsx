@@ -49,7 +49,7 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
       badge: null,
     },
     {
-      label: 'Aprobación de Eventos',
+      label: 'Gestión de Eventos',
       icon: 'verified',
       href: '/events/approvals',
       badge: null,
@@ -79,12 +79,10 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
       <div className="flex flex-col">
         {/* Brand Header */}
         <div className="h-16 px-6 flex items-center gap-3 border-b border-surface-container/60">
-          <div className="w-9 h-9 rounded-xl bg-electric-indigo flex items-center justify-center text-white font-black text-lg shadow-md shadow-electric-indigo/25">
-            QPH
-          </div>
+          <img src="/logo-qph.svg" className="w-8 h-8 rounded-md object-contain" alt="queplaneshoy logo" />
           <div className="flex flex-col">
-            <span className="font-bold tracking-tight text-on-surface leading-none text-base">
-              queplaneshoy
+            <span className="font-extrabold tracking-tight text-on-surface leading-none text-base">
+              queplanes<span className="text-electric-indigo">hoy</span>
             </span>
             <span className="text-[10px] tracking-wider uppercase text-on-surface-variant font-semibold">
               Backoffice Suite
@@ -92,29 +90,13 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
           </div>
         </div>
 
-        {/* Live Node Badge */}
-        <div className="px-4 py-3">
-          <div className="px-3 py-2 rounded-lg bg-surface-container-low flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span className="text-xs font-semibold text-on-surface">Producción ES-01</span>
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-primary-fixed text-on-primary-fixed uppercase tracking-wider">
-              Live
-            </span>
-          </div>
-        </div>
-
         {/* Navigation */}
-        <nav className="mt-2 px-3 flex flex-col gap-1">
+        <nav className="mt-4 px-3 flex flex-col gap-1">
           {navItems.map((item) => {
             const isActive =
               item.href === '/'
                 ? pathname === '/'
-                : pathname?.startsWith(item.href);
+                : pathname === item.href || pathname?.startsWith(`${item.href}/`);
 
             return (
               <Link
