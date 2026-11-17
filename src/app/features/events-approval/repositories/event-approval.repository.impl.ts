@@ -1,5 +1,6 @@
 import { ResultAsync } from 'neverthrow';
 import { DomainError, ERROR_CODES } from '@/app/shared/errors/domain-error';
+import { resolveApiBaseUrl } from '@/app/shared/utils/api-url';
 import { EventApprovalRepository } from './event-approval.repository';
 import {
   ListEventApprovalsFiltersDto,
@@ -10,10 +11,8 @@ import { apiResponseToPaginatedModel } from '../mappers/event-approval.mapper';
 import { AUTH_COOKIE_NAME, getCookie } from '@/app/features/auth';
 
 export class EventApprovalRepositoryImpl implements EventApprovalRepository {
-  private readonly baseUrl: string;
-
-  constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+  private get baseUrl(): string {
+    return resolveApiBaseUrl();
   }
 
   getEvents(filters: ListEventApprovalsFiltersDto): ResultAsync<PaginatedEventApprovalsModel, DomainError> {

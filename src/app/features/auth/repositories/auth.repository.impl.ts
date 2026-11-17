@@ -1,5 +1,6 @@
 import { ResultAsync, ok, err } from 'neverthrow';
 import { DomainError, ERROR_CODES } from '@/app/shared/errors/domain-error';
+import { resolveApiBaseUrl } from '@/app/shared/utils/api-url';
 import { AuthRepository } from './auth.repository';
 import { LoginRequestDto, LoginResponseDto } from '../dto/auth.dto';
 import { AuthSession } from '../models/auth.model';
@@ -13,10 +14,8 @@ import {
 } from '../utils/auth-cookies';
 
 export class AuthRepositoryImpl implements AuthRepository {
-  private readonly baseUrl: string;
-
-  constructor() {
-    this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+  private get baseUrl(): string {
+    return resolveApiBaseUrl();
   }
 
   login(request: LoginRequestDto): ResultAsync<AuthSession, DomainError> {

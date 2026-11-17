@@ -1,5 +1,6 @@
 import { ResultAsync, ok, err } from 'neverthrow';
 import { DomainError, ERROR_CODES } from '@/app/shared/errors/domain-error';
+import { resolveApiBaseUrl } from '@/app/shared/utils/api-url';
 import { UserRepository } from './user.repository';
 import { ListUsersFiltersDto, ListUsersApiResponseDto } from '../dto/user.dto';
 import { PaginatedUsersModel, UserModel } from '../models/user.model';
@@ -7,13 +8,11 @@ import { apiResponseToPaginatedModel } from '../mappers/user.mapper';
 import { AUTH_COOKIE_NAME, getCookie } from '@/app/features/auth';
 
 export class UserRepositoryImpl implements UserRepository {
-  private readonly baseUrl: string;
+  private get baseUrl(): string {
+    return resolveApiBaseUrl();
+  }
 
-    constructor() {
-      this.baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
-    }
-
-      getUsers(filters: ListUsersFiltersDto): ResultAsync<PaginatedUsersModel, DomainError> {
+  getUsers(filters: ListUsersFiltersDto): ResultAsync<PaginatedUsersModel, DomainError> {
         return ResultAsync.fromPromise(
           (async () => {
             const token = getCookie(AUTH_COOKIE_NAME);

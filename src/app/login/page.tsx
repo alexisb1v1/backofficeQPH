@@ -151,11 +151,10 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading || success}
-          className={`w-full py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer text-white shadow-md ${
-            success
+          className={`w-full py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer text-white shadow-md ${success
               ? 'bg-emerald-600 shadow-emerald-500/30'
               : 'bg-electric-indigo hover:bg-primary shadow-indigo-500/25'
-          }`}
+            }`}
         >
           {loading ? (
             <>
@@ -198,7 +197,7 @@ export default function LoginPage() {
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold tracking-tight text-white leading-tight">
-                queplaneshoy
+                queplanhoy
               </span>
               <span className="text-xs uppercase text-platinum-silver tracking-widest font-semibold">
                 Backoffice Suite
