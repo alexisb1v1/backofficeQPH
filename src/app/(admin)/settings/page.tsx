@@ -31,7 +31,7 @@ export default function SettingsPage() {
               </span>
             </div>
             <h1 className="text-2xl lg:text-3xl font-extrabold text-on-surface tracking-tight">
-              Parámetros Globales de queplaneshoy
+              Parámetros Globales de queplanhoy
             </h1>
           </div>
 
@@ -59,11 +59,10 @@ export default function SettingsPage() {
           <nav className="lg:col-span-3 flex flex-col gap-1.5 p-2 bg-surface-container-lowest rounded-2xl shadow-sm border border-surface-container">
             <button
               onClick={() => setActiveTab('fees')}
-              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${
-                activeTab === 'fees'
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${activeTab === 'fees'
                   ? 'bg-primary-container text-on-primary-container shadow-sm'
                   : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px]">payments</span>
@@ -73,11 +72,10 @@ export default function SettingsPage() {
 
             <button
               onClick={() => setActiveTab('gateways')}
-              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${
-                activeTab === 'gateways'
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${activeTab === 'gateways'
                   ? 'bg-primary-container text-on-primary-container shadow-sm'
                   : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px]">account_balance</span>
@@ -87,11 +85,10 @@ export default function SettingsPage() {
 
             <button
               onClick={() => setActiveTab('settlements')}
-              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${
-                activeTab === 'settlements'
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${activeTab === 'settlements'
                   ? 'bg-primary-container text-on-primary-container shadow-sm'
                   : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px]">price_change</span>
@@ -101,11 +98,10 @@ export default function SettingsPage() {
 
             <button
               onClick={() => setActiveTab('security')}
-              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${
-                activeTab === 'security'
+              className={`flex items-center justify-between px-4 py-3 rounded-xl text-xs font-bold transition-all text-left ${activeTab === 'security'
                   ? 'bg-primary-container text-on-primary-container shadow-sm'
                   : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-              }`}
+                }`}
             >
               <div className="flex items-center gap-3">
                 <span className="material-symbols-outlined text-[20px]">shield</span>
@@ -240,22 +236,20 @@ export default function SettingsPage() {
                     <button
                       type="button"
                       onClick={() => setFeeMode('buyer')}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                        feeMode === 'buyer'
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${feeMode === 'buyer'
                           ? 'bg-surface-container-lowest text-on-surface shadow-sm'
                           : 'text-on-surface-variant hover:text-on-surface'
-                      }`}
+                        }`}
                     >
                       Al Comprador
                     </button>
                     <button
                       type="button"
                       onClick={() => setFeeMode('promoter')}
-                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-                        feeMode === 'promoter'
+                      className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${feeMode === 'promoter'
                           ? 'bg-surface-container-lowest text-on-surface shadow-sm'
                           : 'text-on-surface-variant hover:text-on-surface'
-                      }`}
+                        }`}
                     >
                       Deducido al Organizador
                     </button>

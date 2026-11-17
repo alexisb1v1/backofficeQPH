@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'QPH Backoffice Suite | QuePlanesHoy',
+  title: 'QPH Backoffice Suite | QuePlanHoy',
   description: 'Plataforma administrativa interna para supervisión de eventos, liquidaciones y operaciones.',
 };
 

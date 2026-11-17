@@ -104,11 +104,10 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all font-medium text-sm ${
-                  isActive
+                className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all font-medium text-sm ${isActive
                     ? 'bg-primary-container text-on-primary-container font-semibold shadow-[0_10px_10px_-5px_rgba(0,0,0,0.02)]'
                     : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-                }`}
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-[20px]">
@@ -118,9 +117,8 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
                 </div>
                 {item.badge !== null && item.badge !== undefined && (
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
-                      item.badgeColor || 'bg-primary-fixed text-on-primary-fixed'
-                    }`}
+                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${item.badgeColor || 'bg-primary-fixed text-on-primary-fixed'
+                      }`}
                   >
                     {item.badge}
                   </span>
@@ -143,7 +141,7 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
                 {currentUser?.displayName || 'Super Admin'}
               </span>
               <span className="text-[11px] text-on-surface-variant leading-tight truncate">
-                {currentUser?.email || 'ops@queplaneshoy.com'}
+                {currentUser?.email || 'ops@queplanhoy.com'}
               </span>
             </div>
           </div>
