@@ -1,7 +1,7 @@
 export interface LoginRequestDto {
   username: string;
   password: string;
-  origin?: 'web' | 'backoffice';
+  origin?: "web" | "backoffice";
 }
 
 export interface AuthUserDto {
@@ -23,4 +23,3 @@ export interface LoginResponseDto {
   userProfile?: AuthUserDto;
   message: string;
 }
-

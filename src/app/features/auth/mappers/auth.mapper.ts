@@ -1,11 +1,11 @@
-import { LoginResponseDto, AuthUserDto } from '../dto/auth.dto';
-import { AuthSession, AdminSessionUser } from '../models/auth.model';
+import { LoginResponseDto, AuthUserDto } from "../dto/auth.dto";
+import { AuthSession, AdminSessionUser } from "../models/auth.model";
 
 export class AuthMapper {
   static toDomainUser(dto: AuthUserDto): AdminSessionUser {
     const displayName =
       dto.name?.trim() ||
-      [dto.firstName, dto.lastName].filter(Boolean).join(' ').trim() ||
+      [dto.firstName, dto.lastName].filter(Boolean).join(" ").trim() ||
       dto.email;
 
     return {
@@ -26,4 +26,3 @@ export class AuthMapper {
     };
   }
 }
-

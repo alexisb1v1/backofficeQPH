@@ -1,4 +1,5 @@
-export type EventApprovalStatus = 'pending' | 'in_review' | 'published' | 'observed';
+export type EventApprovalStatus =
+  "pending" | "in_review" | "published" | "observed";
 
 export interface EventApprovalZoneModel {
   name: string;

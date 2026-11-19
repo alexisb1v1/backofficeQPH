@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function DashboardPage() {
   return (
@@ -39,7 +39,9 @@ export default function DashboardPage() {
               </button>
             </div>
             <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-xs font-semibold text-on-surface">
-              <span className="material-symbols-outlined text-[18px]">calendar_today</span>
+              <span className="material-symbols-outlined text-[18px]">
+                calendar_today
+              </span>
               <span>Filtrar</span>
             </button>
           </div>
@@ -56,7 +58,9 @@ export default function DashboardPage() {
                   Recaudación Total (GMV)
                 </span>
                 <div className="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
-                  <span className="material-symbols-outlined text-[22px]">payments</span>
+                  <span className="material-symbols-outlined text-[22px]">
+                    payments
+                  </span>
                 </div>
               </div>
               <div className="text-3xl lg:text-4xl text-on-surface mb-2 font-extrabold tracking-tight">
@@ -65,10 +69,14 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center justify-between pt-4 mt-2 border-t border-surface-container">
               <div className="flex items-center gap-1 text-emerald-600 text-xs font-bold">
-                <span className="material-symbols-outlined text-[18px]">trending_up</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  trending_up
+                </span>
                 <span>+18.4%</span>
               </div>
-              <span className="text-xs text-on-surface-variant">vs mes anterior</span>
+              <span className="text-xs text-on-surface-variant">
+                vs mes anterior
+              </span>
             </div>
           </div>
 
@@ -81,7 +89,9 @@ export default function DashboardPage() {
                   Tickets Vendidos
                 </span>
                 <div className="w-10 h-10 rounded-xl bg-secondary-container flex items-center justify-center text-on-secondary-container">
-                  <span className="material-symbols-outlined text-[22px]">confirmation_number</span>
+                  <span className="material-symbols-outlined text-[22px]">
+                    confirmation_number
+                  </span>
                 </div>
               </div>
               <div className="text-3xl lg:text-4xl text-on-surface mb-2 font-extrabold tracking-tight">
@@ -90,10 +100,14 @@ export default function DashboardPage() {
             </div>
             <div className="flex items-center justify-between pt-4 mt-2 border-t border-surface-container">
               <div className="flex items-center gap-1 text-emerald-600 text-xs font-bold">
-                <span className="material-symbols-outlined text-[18px]">trending_up</span>
+                <span className="material-symbols-outlined text-[18px]">
+                  trending_up
+                </span>
                 <span>+12.6%</span>
               </div>
-              <span className="text-xs text-on-surface-variant">4,120 en 24h</span>
+              <span className="text-xs text-on-surface-variant">
+                4,120 en 24h
+              </span>
             </div>
           </div>
 
@@ -106,7 +120,9 @@ export default function DashboardPage() {
                   Eventos Activos
                 </span>
                 <div className="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-on-surface">
-                  <span className="material-symbols-outlined text-[22px]">event_available</span>
+                  <span className="material-symbols-outlined text-[22px]">
+                    event_available
+                  </span>
                 </div>
               </div>
               <div className="text-3xl lg:text-4xl text-on-surface mb-2 font-extrabold tracking-tight">
@@ -118,7 +134,9 @@ export default function DashboardPage() {
                 <span className="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
                 <span>8 en revisión</span>
               </div>
-              <span className="text-xs text-on-surface-variant">92 organizadores</span>
+              <span className="text-xs text-on-surface-variant">
+                92 organizadores
+              </span>
             </div>
           </div>
 
@@ -131,7 +149,9 @@ export default function DashboardPage() {
                   Adelantos y Retiros
                 </span>
                 <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-800">
-                  <span className="material-symbols-outlined text-[22px]">account_balance</span>
+                  <span className="material-symbols-outlined text-[22px]">
+                    account_balance
+                  </span>
                 </div>
               </div>
               <div className="text-3xl lg:text-4xl text-on-surface mb-2 font-extrabold tracking-tight">
@@ -139,8 +159,12 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex items-center justify-between pt-4 mt-2 border-t border-surface-container">
-              <span className="text-xs font-bold text-amber-700">S/ 142,500 en cola</span>
-              <span className="text-xs text-on-surface-variant">SLA: 24 horas</span>
+              <span className="text-xs font-bold text-amber-700">
+                S/ 142,500 en cola
+              </span>
+              <span className="text-xs text-on-surface-variant">
+                SLA: 24 horas
+              </span>
             </div>
           </div>
         </div>
@@ -156,17 +180,22 @@ export default function DashboardPage() {
                     Evolución de Ventas vs Comisiones
                   </h2>
                   <p className="text-xs text-on-surface-variant">
-                    Comportamiento semanal de emisión bruta y margen QPH (7.5% avg)
+                    Comportamiento semanal de emisión bruta y margen QPH (7.5%
+                    avg)
                   </p>
                 </div>
                 <div className="flex items-center gap-4 text-xs font-semibold">
                   <div className="flex items-center gap-1.5">
                     <span className="w-3 h-3 rounded-sm bg-primary"></span>
-                    <span className="text-on-surface-variant">Ventas Brutas</span>
+                    <span className="text-on-surface-variant">
+                      Ventas Brutas
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="w-3 h-3 rounded-sm bg-vip-gold"></span>
-                    <span className="text-on-surface-variant">Comisión QPH</span>
+                    <span className="text-on-surface-variant">
+                      Comisión QPH
+                    </span>
                   </div>
                 </div>
               </div>
@@ -179,18 +208,73 @@ export default function DashboardPage() {
                   preserveAspectRatio="none"
                   viewBox="0 0 700 240"
                 >
-                  <line stroke="#f2f4f6" strokeDasharray="4 4" strokeWidth="1.5" x1="0" x2="700" y1="20" y2="20" />
-                  <line stroke="#f2f4f6" strokeDasharray="4 4" strokeWidth="1.5" x1="0" x2="700" y1="80" y2="80" />
-                  <line stroke="#f2f4f6" strokeDasharray="4 4" strokeWidth="1.5" x1="0" x2="700" y1="140" y2="140" />
-                  <line stroke="#eceef0" strokeWidth="1.5" x1="0" x2="700" y1="200" y2="200" />
+                  <line
+                    stroke="#f2f4f6"
+                    strokeDasharray="4 4"
+                    strokeWidth="1.5"
+                    x1="0"
+                    x2="700"
+                    y1="20"
+                    y2="20"
+                  />
+                  <line
+                    stroke="#f2f4f6"
+                    strokeDasharray="4 4"
+                    strokeWidth="1.5"
+                    x1="0"
+                    x2="700"
+                    y1="80"
+                    y2="80"
+                  />
+                  <line
+                    stroke="#f2f4f6"
+                    strokeDasharray="4 4"
+                    strokeWidth="1.5"
+                    x1="0"
+                    x2="700"
+                    y1="140"
+                    y2="140"
+                  />
+                  <line
+                    stroke="#eceef0"
+                    strokeWidth="1.5"
+                    x1="0"
+                    x2="700"
+                    y1="200"
+                    y2="200"
+                  />
                   <defs>
-                    <linearGradient id="primaryAreaGrad" x1="0" x2="0" y1="0" y2="1">
-                      <stop offset="0%" stopColor="#4648d4" stopOpacity="0.25" />
-                      <stop offset="100%" stopColor="#4648d4" stopOpacity="0.0" />
+                    <linearGradient
+                      id="primaryAreaGrad"
+                      x1="0"
+                      x2="0"
+                      y1="0"
+                      y2="1"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor="#4648d4"
+                        stopOpacity="0.25"
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="#4648d4"
+                        stopOpacity="0.0"
+                      />
                     </linearGradient>
-                    <linearGradient id="goldAreaGrad" x1="0" x2="0" y1="0" y2="1">
+                    <linearGradient
+                      id="goldAreaGrad"
+                      x1="0"
+                      x2="0"
+                      y1="0"
+                      y2="1"
+                    >
                       <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.2" />
-                      <stop offset="100%" stopColor="#F59E0B" stopOpacity="0.0" />
+                      <stop
+                        offset="100%"
+                        stopColor="#F59E0B"
+                        stopOpacity="0.0"
+                      />
                     </linearGradient>
                   </defs>
                   <path
@@ -215,7 +299,13 @@ export default function DashboardPage() {
                   />
                   <circle cx="233" cy="130" fill="#4648d4" r="4" />
                   <circle cx="466" cy="70" fill="#4648d4" r="4" />
-                  <circle cx="700" cy="45" fill="#4648d4" r="5" className="ring-4 ring-primary/20" />
+                  <circle
+                    cx="700"
+                    cy="45"
+                    fill="#4648d4"
+                    r="5"
+                    className="ring-4 ring-primary/20"
+                  />
                   <circle cx="700" cy="135" fill="#F59E0B" r="4" />
                 </svg>
               </div>
@@ -234,16 +324,28 @@ export default function DashboardPage() {
 
             <div className="grid grid-cols-3 gap-4 pt-6 mt-6 bg-surface-container-low p-4 rounded-xl border border-surface-container">
               <div className="flex flex-col">
-                <span className="text-xs text-on-surface-variant">Pico Diario</span>
-                <span className="text-sm font-bold text-on-surface">S/ 940,320</span>
+                <span className="text-xs text-on-surface-variant">
+                  Pico Diario
+                </span>
+                <span className="text-sm font-bold text-on-surface">
+                  S/ 940,320
+                </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs text-on-surface-variant">Ticket Promedio</span>
-                <span className="text-sm font-bold text-on-surface">S/ 71.50</span>
+                <span className="text-xs text-on-surface-variant">
+                  Ticket Promedio
+                </span>
+                <span className="text-sm font-bold text-on-surface">
+                  S/ 71.50
+                </span>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs text-on-surface-variant">Comisión QPH acumulada</span>
-                <span className="text-sm font-bold text-primary">S/ 366,910</span>
+                <span className="text-xs text-on-surface-variant">
+                  Comisión QPH acumulada
+                </span>
+                <span className="text-sm font-bold text-primary">
+                  S/ 366,910
+                </span>
               </div>
             </div>
           </div>
@@ -252,17 +354,33 @@ export default function DashboardPage() {
           <div className="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-sm flex flex-col justify-between border border-surface-container">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <h2 className="text-lg font-bold text-on-surface">Por Categoría</h2>
+                <h2 className="text-lg font-bold text-on-surface">
+                  Por Categoría
+                </h2>
                 <button className="text-on-surface-variant hover:text-on-surface p-1 rounded-lg">
-                  <span className="material-symbols-outlined text-[20px]">more_horiz</span>
+                  <span className="material-symbols-outlined text-[20px]">
+                    more_horiz
+                  </span>
                 </button>
               </div>
-              <p className="text-xs text-on-surface-variant mb-6">Participación en volumen de entradas</p>
+              <p className="text-xs text-on-surface-variant mb-6">
+                Participación en volumen de entradas
+              </p>
 
               {/* Inline Visual Donut */}
               <div className="relative flex items-center justify-center my-4">
-                <svg className="w-44 h-44 transform -rotate-90" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" fill="none" r="48" stroke="#eceef0" strokeWidth="14" />
+                <svg
+                  className="w-44 h-44 transform -rotate-90"
+                  viewBox="0 0 120 120"
+                >
+                  <circle
+                    cx="60"
+                    cy="60"
+                    fill="none"
+                    r="48"
+                    stroke="#eceef0"
+                    strokeWidth="14"
+                  />
                   <circle
                     cx="60"
                     cy="60"
@@ -309,9 +427,15 @@ export default function DashboardPage() {
                   />
                 </svg>
                 <div className="absolute flex flex-col items-center justify-center text-center">
-                  <span className="text-[10px] font-bold text-on-surface-variant uppercase">Líder</span>
-                  <span className="text-2xl font-bold text-on-surface">54%</span>
-                  <span className="text-[11px] text-on-surface-variant">Conciertos</span>
+                  <span className="text-[10px] font-bold text-on-surface-variant uppercase">
+                    Líder
+                  </span>
+                  <span className="text-2xl font-bold text-on-surface">
+                    54%
+                  </span>
+                  <span className="text-[11px] text-on-surface-variant">
+                    Conciertos
+                  </span>
                 </div>
               </div>
             </div>
@@ -358,7 +482,9 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
-                    <span className="material-symbols-outlined text-[18px]">gavel</span>
+                    <span className="material-symbols-outlined text-[18px]">
+                      gavel
+                    </span>
                   </div>
                   <h2 className="text-lg font-bold text-on-surface">
                     Aprobación de Eventos Pendientes
@@ -369,7 +495,8 @@ export default function DashboardPage() {
                 </span>
               </div>
               <p className="text-xs text-on-surface-variant mb-5">
-                Organizadores solicitando validación de fianza, aforo y publicación.
+                Organizadores solicitando validación de fianza, aforo y
+                publicación.
               </p>
 
               <div className="flex flex-col gap-3">
@@ -404,7 +531,9 @@ export default function DashboardPage() {
                       Revisar
                     </Link>
                     <button className="px-3.5 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 text-xs font-semibold shadow-sm transition-all flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                      <span className="material-symbols-outlined text-[16px]">
+                        check_circle
+                      </span>
                       <span>Aprobar</span>
                     </button>
                   </div>
@@ -441,7 +570,9 @@ export default function DashboardPage() {
                       Revisar
                     </Link>
                     <button className="px-3.5 py-1.5 rounded-lg bg-primary text-white hover:bg-primary/90 text-xs font-semibold shadow-sm transition-all flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                      <span className="material-symbols-outlined text-[16px]">
+                        check_circle
+                      </span>
                       <span>Aprobar</span>
                     </button>
                   </div>
@@ -450,13 +581,17 @@ export default function DashboardPage() {
             </div>
 
             <div className="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
-              <span className="text-xs text-on-surface-variant">5 eventos más en cola de moderación</span>
+              <span className="text-xs text-on-surface-variant">
+                5 eventos más en cola de moderación
+              </span>
               <Link
                 href="/events/approvals"
                 className="text-xs font-bold text-primary hover:text-electric-indigo transition-colors flex items-center gap-1"
               >
                 <span>Ver cola de aprobación</span>
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                <span className="material-symbols-outlined text-[16px]">
+                  arrow_forward
+                </span>
               </Link>
             </div>
           </div>
@@ -467,16 +602,21 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-vip-gold/20 flex items-center justify-center text-amber-800">
-                    <span className="material-symbols-outlined text-[18px]">price_check</span>
+                    <span className="material-symbols-outlined text-[18px]">
+                      price_check
+                    </span>
                   </div>
-                  <h2 className="text-lg font-bold text-on-surface">Liquidaciones & Adelantos</h2>
+                  <h2 className="text-lg font-bold text-on-surface">
+                    Liquidaciones & Adelantos
+                  </h2>
                 </div>
                 <span className="px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-semibold">
                   8 pendientes
                 </span>
               </div>
               <p className="text-xs text-on-surface-variant mb-5">
-                Retiros solicitados por promotores con eventos publicados o culminados.
+                Retiros solicitados por promotores con eventos publicados o
+                culminados.
               </p>
 
               <div className="flex flex-col gap-3">
@@ -523,13 +663,17 @@ export default function DashboardPage() {
             </div>
 
             <div className="pt-4 mt-4 border-t border-surface-container flex items-center justify-between">
-              <span className="text-xs text-on-surface-variant">Total por desembolsar: S/ 142,500</span>
+              <span className="text-xs text-on-surface-variant">
+                Total por desembolsar: S/ 142,500
+              </span>
               <Link
                 href="/finance/requests"
                 className="text-xs font-bold text-primary hover:text-electric-indigo transition-colors flex items-center gap-1"
               >
                 <span>Gestionar Solicitudes</span>
-                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                <span className="material-symbols-outlined text-[16px]">
+                  arrow_forward
+                </span>
               </Link>
             </div>
           </div>
@@ -538,4 +682,3 @@ export default function DashboardPage() {
     </div>
   );
 }
-

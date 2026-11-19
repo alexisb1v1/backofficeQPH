@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { logoutUseCase, getStoredSessionUseCase, AdminSessionUser } from '@/app/features/auth';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  logoutUseCase,
+  getStoredSessionUseCase,
+  AdminSessionUser,
+} from "@/app/features/auth";
 
 interface SidebarProps {
   pendingApprovalsCount?: number;
@@ -23,7 +27,7 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
 
   const handleLogout = async () => {
     await logoutUseCase.execute();
-    router.push('/login');
+    router.push("/login");
     router.refresh();
   };
 
@@ -37,39 +41,39 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
 
   const navItems: NavItem[] = [
     {
-      label: 'Dashboard',
-      icon: 'grid_view',
-      href: '/',
+      label: "Dashboard",
+      icon: "grid_view",
+      href: "/",
       badge: null,
     },
     {
-      label: 'Gestión de Usuarios',
-      icon: 'group',
-      href: '/users',
+      label: "Gestión de Usuarios",
+      icon: "group",
+      href: "/users",
       badge: null,
     },
     {
-      label: 'Gestión de Eventos',
-      icon: 'verified',
-      href: '/events/approvals',
+      label: "Gestión de Eventos",
+      icon: "verified",
+      href: "/events/approvals",
       badge: null,
     },
     {
-      label: 'Finanzas & Liquidaciones',
-      icon: 'account_balance_wallet',
-      href: '/finance',
+      label: "Finanzas & Liquidaciones",
+      icon: "account_balance_wallet",
+      href: "/finance",
       badge: null,
     },
     {
-      label: 'Solicitudes y Adelantos',
-      icon: 'receipt_long',
-      href: '/finance/requests',
+      label: "Solicitudes y Adelantos",
+      icon: "receipt_long",
+      href: "/finance/requests",
       badge: null,
     },
     {
-      label: 'Configuraciones QPH',
-      icon: 'tune',
-      href: '/settings',
+      label: "Configuraciones QPH",
+      icon: "tune",
+      href: "/settings",
       badge: null,
     },
   ];
@@ -96,18 +100,20 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
         <nav className="mt-4 px-3 flex flex-col gap-1">
           {navItems.map((item) => {
             const isActive =
-              item.href === '/'
-                ? pathname === '/'
-                : pathname === item.href || pathname?.startsWith(`${item.href}/`);
+              item.href === "/"
+                ? pathname === "/"
+                : pathname === item.href ||
+                  pathname?.startsWith(`${item.href}/`);
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all font-medium text-sm ${isActive
-                    ? 'bg-primary-container text-on-primary-container font-semibold shadow-[0_10px_10px_-5px_rgba(0,0,0,0.02)]'
-                    : 'text-on-surface-variant hover:bg-surface-container hover:text-on-surface'
-                  }`}
+                className={`flex items-center justify-between px-3.5 py-3 rounded-xl transition-all font-medium text-sm ${
+                  isActive
+                    ? "bg-primary-container text-on-primary-container font-semibold shadow-[0_10px_10px_-5px_rgba(0,0,0,0.02)]"
+                    : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-[20px]">
@@ -117,8 +123,10 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
                 </div>
                 {item.badge !== null && item.badge !== undefined && (
                   <span
-                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${item.badgeColor || 'bg-primary-fixed text-on-primary-fixed'
-                      }`}
+                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                      item.badgeColor ||
+                      "bg-primary-fixed text-on-primary-fixed"
+                    }`}
                   >
                     {item.badge}
                   </span>
@@ -134,14 +142,16 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
         <div className="p-3 rounded-xl bg-surface-container-low flex items-center justify-between">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="w-8 h-8 rounded-full bg-primary flex-shrink-0 flex items-center justify-center text-white">
-              <span className="material-symbols-outlined text-[18px]">person</span>
+              <span className="material-symbols-outlined text-[18px]">
+                person
+              </span>
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-bold text-on-surface leading-tight truncate">
-                {currentUser?.displayName || 'Super Admin'}
+                {currentUser?.displayName || "Super Admin"}
               </span>
               <span className="text-[11px] text-on-surface-variant leading-tight truncate">
-                {currentUser?.email || 'ops@queplanhoy.com'}
+                {currentUser?.email || "ops@queplanhoy.com"}
               </span>
             </div>
           </div>
@@ -151,11 +161,12 @@ export function AdminSidebar({ pendingApprovalsCount }: SidebarProps) {
             className="text-on-surface-variant hover:text-error transition-colors p-1.5 rounded-lg hover:bg-surface-container cursor-pointer flex-shrink-0"
             title="Cerrar sesión"
           >
-            <span className="material-symbols-outlined text-[20px]">logout</span>
+            <span className="material-symbols-outlined text-[20px]">
+              logout
+            </span>
           </button>
         </div>
       </div>
     </aside>
   );
 }
-

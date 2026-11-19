@@ -1,5 +1,5 @@
-export type UserRole = 'customer' | 'admin';
-export type UserStatus = 'active' | 'pending_verification' | 'suspended';
+export type UserRole = "customer" | "admin";
+export type UserStatus = "active" | "pending_verification" | "suspended";
 
 export interface UserModel {
   id: number;

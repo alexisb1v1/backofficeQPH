@@ -1,111 +1,170 @@
-import { ResultAsync, okAsync, errAsync } from 'neverthrow';
-import { DomainError, ERROR_CODES } from '@/app/shared/errors/domain-error';
-import { FinanceRequestDto } from '../dto/finance-request.dto';
-import { FinanceRequestItem } from '../models/finance-request.model';
-import { financeRequestDtoToModel } from '../mappers/finance-request.mapper';
-import { FinanceRepository } from './finance.repository';
-
-const INITIAL_FINANCE_REQUESTS: FinanceRequestDto[] = [
-  {
-    code: 'ADL-2026-0089',
-    type: 'advance',
-    event_title: 'Neon Lights Festival Lima 2026',
-    organizer_name: 'Sonorama Live SAC',
-    organizer_ruc: '20601984210',
-    bank_name: 'BCP Soles Cta Cte',
-    bank_account: '193-9481928-0-12',
-    gross_accumulated_cents: 12000000,
-    platform_fee_cents: 780000,
-    requested_amount_cents: 4800000,
-    pct_of_available: 40.0,
-    status: 'pending',
-    requested_date: 'Hoy, 10:15 am',
-  },
-  {
-    code: 'ADL-2026-0090',
-    type: 'advance',
-    event_title: 'Filarmónica Soundtracks Anime',
-    organizer_name: 'Cultura Viva Producciones',
-    organizer_ruc: '20551928371',
-    bank_name: 'BBVA Perú Soles',
-    bank_account: '0011-0482-0100039281',
-    gross_accumulated_cents: 6800000,
-    platform_fee_cents: 340000,
-    requested_amount_cents: 2500000,
-    pct_of_available: 36.7,
-    status: 'pending',
-    requested_date: 'Ayer, 04:30 pm',
-  },
-  {
-    code: 'LIQ-2026-0041',
-    type: 'settlement',
-    event_title: 'Standup Comedy Especial Fin de Año',
-    organizer_name: 'Prod. Macanudo EIRL',
-    organizer_ruc: '20551928371',
-    bank_name: 'Interbank Soles',
-    bank_account: '200-3001928419',
-    gross_accumulated_cents: 2250000,
-    platform_fee_cents: 135000,
-    requested_amount_cents: 1845000,
-    pct_of_available: 100,
-    status: 'approved',
-    requested_date: '10 Mar 2026',
-  },
-  {
-    code: 'LIQ-2026-0042',
-    type: 'settlement',
-    event_title: 'Torneo Pádel Lima Open 2026',
-    organizer_name: 'Padel Pro League Peru SAC',
-    organizer_ruc: '20718829102',
-    bank_name: 'BCP Soles',
-    bank_account: '191-4829104-0-99',
-    gross_accumulated_cents: 3800000,
-    platform_fee_cents: 182400,
-    requested_amount_cents: 3420000,
-    pct_of_available: 100,
-    status: 'paid',
-    requested_date: '08 Mar 2026',
-  },
-];
+import { ResultAsync } from "neverthrow";
+import { DomainError, ERROR_CODES } from "@/app/shared/errors/domain-error";
+import { resolveApiBaseUrl } from "@/app/shared/utils/api-url";
+import { FinanceRepository } from "./finance.repository";
+import {
+  AdminSettlementListApiResponseDto,
+  PayFinanceRequestDto,
+  RejectFinanceRequestDto,
+} from "../dto/finance-request.dto";
+import { FinanceRequestItem } from "../models/finance-request.model";
+import { adminSettlementApiToModel } from "../mappers/finance-request.mapper";
+import { AUTH_COOKIE_NAME, getCookie } from "@/app/features/auth";
 
 export class FinanceRepositoryImpl implements FinanceRepository {
-  private data: FinanceRequestDto[] = [...INITIAL_FINANCE_REQUESTS];
-
-  getRequests(): ResultAsync<FinanceRequestItem[], DomainError> {
-    try {
-      const models = this.data.map(financeRequestDtoToModel);
-      return okAsync(models);
-    } catch (error) {
-      return errAsync(
-        new DomainError(
-          ERROR_CODES.INTERNAL_ERROR.message,
-          ERROR_CODES.INTERNAL_ERROR.code,
-          error
-        )
-      );
-    }
+  private get baseUrl(): string {
+    return resolveApiBaseUrl();
   }
 
-  approveRequest(code: string): ResultAsync<void, DomainError> {
-    const item = this.data.find((r) => r.code === code);
-    if (!item) {
-      return errAsync(
-        new DomainError(ERROR_CODES.NOT_FOUND.message, ERROR_CODES.NOT_FOUND.code)
-      );
-    }
-    item.status = 'approved';
-    return okAsync(undefined);
+  getRequests(
+    status?: string,
+    search?: string,
+  ): ResultAsync<FinanceRequestItem[], DomainError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const token = getCookie(AUTH_COOKIE_NAME);
+        const params = new URLSearchParams();
+
+        if (status && status !== "all") params.set("status", status);
+        if (search) params.set("search", search);
+
+        const queryString = params.toString() ? `?${params.toString()}` : "";
+        const url = `${this.baseUrl}/events/admin/settlements${queryString}`;
+
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          credentials: "include",
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          const message =
+            (data && (data.message || data.error)) ||
+            (res.status === 401
+              ? "Sesión no autorizada"
+              : res.status === 403
+                ? "Acceso restringido a administradores"
+                : "Error al consultar solicitudes de liquidación");
+
+          throw new DomainError(
+            message,
+            res.status === 401
+              ? ERROR_CODES.UNAUTHORIZED.code
+              : res.status === 403
+                ? ERROR_CODES.BUSINESS_RULE.code
+                : ERROR_CODES.NETWORK_ERROR.code,
+          );
+        }
+
+        const apiResponse = data as AdminSettlementListApiResponseDto;
+        const items = Array.isArray(apiResponse?.items)
+          ? apiResponse.items
+          : [];
+        return items.map(adminSettlementApiToModel);
+      })(),
+      (error) => {
+        if (error instanceof DomainError) return error;
+        return new DomainError(
+          "Error al conectar con el servidor",
+          ERROR_CODES.NETWORK_ERROR.code,
+          error,
+        );
+      },
+    );
   }
 
-  markRequestPaid(code: string): ResultAsync<void, DomainError> {
-    const item = this.data.find((r) => r.code === code);
-    if (!item) {
-      return errAsync(
-        new DomainError(ERROR_CODES.NOT_FOUND.message, ERROR_CODES.NOT_FOUND.code)
-      );
-    }
-    item.status = 'paid';
-    return okAsync(undefined);
+  approveRequest(id: string): ResultAsync<void, DomainError> {
+    // Si la liquidación ya está en revisión, aprobar directamente se despacha con la transferencia
+    return ResultAsync.fromPromise(
+      (async () => {
+        // Reservado si se requiere un estado intermedio de pre-aprobación
+      })(),
+      (error) =>
+        error instanceof DomainError
+          ? error
+          : new DomainError(String(error), ERROR_CODES.INTERNAL_ERROR.code),
+    );
+  }
+
+  markRequestPaid(
+    id: string,
+    dto: PayFinanceRequestDto,
+  ): ResultAsync<void, DomainError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const token = getCookie(AUTH_COOKIE_NAME);
+        const url = `${this.baseUrl}/events/admin/settlements/${encodeURIComponent(id)}/pay`;
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          credentials: "include",
+          body: JSON.stringify(dto),
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          throw new DomainError(
+            (data && (data.message || data.error)) ||
+              "No se pudo procesar el pago de la liquidación",
+            ERROR_CODES.BUSINESS_RULE.code,
+          );
+        }
+      })(),
+      (error) =>
+        error instanceof DomainError
+          ? error
+          : new DomainError(String(error), ERROR_CODES.INTERNAL_ERROR.code),
+    );
+  }
+
+  rejectRequest(
+    id: string,
+    dto: RejectFinanceRequestDto,
+  ): ResultAsync<void, DomainError> {
+    return ResultAsync.fromPromise(
+      (async () => {
+        const token = getCookie(AUTH_COOKIE_NAME);
+        const url = `${this.baseUrl}/events/admin/settlements/${encodeURIComponent(id)}/reject`;
+
+        const res = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          credentials: "include",
+          body: JSON.stringify(dto),
+        });
+
+        const data = await res.json().catch(() => null);
+
+        if (!res.ok) {
+          throw new DomainError(
+            (data && (data.message || data.error)) ||
+              "No se pudo rechazar la solicitud de liquidación",
+            ERROR_CODES.BUSINESS_RULE.code,
+          );
+        }
+      })(),
+      (error) =>
+        error instanceof DomainError
+          ? error
+          : new DomainError(String(error), ERROR_CODES.INTERNAL_ERROR.code),
+    );
   }
 }
 
+export const financeRepository = new FinanceRepositoryImpl();

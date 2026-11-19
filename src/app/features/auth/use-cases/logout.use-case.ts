@@ -1,6 +1,6 @@
-import { ResultAsync } from 'neverthrow';
-import { DomainError } from '@/app/shared/errors/domain-error';
-import { AuthRepository } from '../repositories/auth.repository';
+import { ResultAsync } from "neverthrow";
+import { DomainError } from "@/app/shared/errors/domain-error";
+import { AuthRepository } from "../repositories/auth.repository";
 
 export class LogoutUseCase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -9,4 +9,3 @@ export class LogoutUseCase {
     return this.authRepository.logout();
   }
 }
-

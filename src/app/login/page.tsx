@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   ShieldCheck,
   Lock,
@@ -14,16 +14,16 @@ import {
   FileText,
   LifeBuoy,
   AlertCircle,
-} from 'lucide-react';
-import { loginUseCase } from '@/app/features/auth';
+} from "lucide-react";
+import { loginUseCase } from "@/app/features/auth";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const from = searchParams.get('from') || '/';
+  const from = searchParams.get("from") || "/";
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -39,7 +39,7 @@ function LoginForm() {
     const result = await loginUseCase.execute({
       username: username.trim(),
       password,
-      origin: 'backoffice',
+      origin: "backoffice",
     });
 
     result.match(
@@ -110,7 +110,7 @@ function LoginForm() {
           <Lock className="w-4 h-4 text-on-surface-variant absolute left-3.5 pointer-events-none" />
           <input
             id="adminPassword"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             required
             autoComplete="current-password"
             value={password}
@@ -151,10 +151,11 @@ function LoginForm() {
         <button
           type="submit"
           disabled={loading || success}
-          className={`w-full py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer text-white shadow-md ${success
-              ? 'bg-emerald-600 shadow-emerald-500/30'
-              : 'bg-electric-indigo hover:bg-primary shadow-indigo-500/25'
-            }`}
+          className={`w-full py-3.5 px-6 font-bold text-sm rounded-xl transition-all duration-200 flex items-center justify-center gap-2 group cursor-pointer text-white shadow-md ${
+            success
+              ? "bg-emerald-600 shadow-emerald-500/30"
+              : "bg-electric-indigo hover:bg-primary shadow-indigo-500/25"
+          }`}
         >
           {loading ? (
             <>
@@ -213,7 +214,8 @@ export default function LoginPage() {
               Gestión Central de Eventos y Operaciones
             </h1>
             <p className="text-xs xl:text-sm text-slate-300 font-normal leading-relaxed max-w-md">
-              Plataforma interna para supervisión de taquilla, validación de accesos, conciliación financiera y métricas en tiempo real.
+              Plataforma interna para supervisión de taquilla, validación de
+              accesos, conciliación financiera y métricas en tiempo real.
             </p>
           </div>
         </div>
@@ -238,7 +240,9 @@ export default function LoginPage() {
           <div className="space-y-2 pt-1">
             <div className="flex justify-between text-xs text-slate-400">
               <span>Latencia de red interna</span>
-              <span className="font-semibold text-white font-mono">12 ms (Óptima)</span>
+              <span className="font-semibold text-white font-mono">
+                12 ms (Óptima)
+              </span>
             </div>
             <svg
               className="w-full h-10 text-electric-indigo stroke-current fill-none"
@@ -295,15 +299,18 @@ export default function LoginPage() {
               Acceso Administrativo
             </h2>
             <p className="text-xs text-on-surface-variant">
-              Introduce tus credenciales corporativas verificadas para ingresar a la consola de operaciones.
+              Introduce tus credenciales corporativas verificadas para ingresar
+              a la consola de operaciones.
             </p>
           </div>
 
-          <Suspense fallback={
-            <div className="py-8 flex items-center justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-electric-indigo" />
-            </div>
-          }>
+          <Suspense
+            fallback={
+              <div className="py-8 flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-electric-indigo" />
+              </div>
+            }
+          >
             <LoginForm />
           </Suspense>
         </div>
@@ -313,7 +320,8 @@ export default function LoginPage() {
           <div className="flex items-center gap-2">
             <FileText className="w-4 h-4 flex-shrink-0 text-on-surface-variant" />
             <p className="text-[11px] leading-tight">
-              <strong>Aviso de Auditoría:</strong> Acceso registrado y monitoreado por el SOC.
+              <strong>Aviso de Auditoría:</strong> Acceso registrado y
+              monitoreado por el SOC.
             </p>
           </div>
           <a

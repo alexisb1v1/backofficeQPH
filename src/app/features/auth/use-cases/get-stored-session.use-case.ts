@@ -1,5 +1,5 @@
-import { AuthRepository } from '../repositories/auth.repository';
-import { AuthSession } from '../models/auth.model';
+import { AuthRepository } from "../repositories/auth.repository";
+import { AuthSession } from "../models/auth.model";
 
 export class GetStoredSessionUseCase {
   constructor(private readonly authRepository: AuthRepository) {}
@@ -8,4 +8,3 @@ export class GetStoredSessionUseCase {
     return this.authRepository.getStoredSession();
   }
 }
-

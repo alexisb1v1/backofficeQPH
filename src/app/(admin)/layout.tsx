@@ -1,5 +1,5 @@
-import { AdminSidebar } from '@/components/admin-sidebar';
-import { AdminHeader } from '@/components/admin-header';
+import { AdminSidebar } from "@/components/admin-sidebar";
+import { AdminHeader } from "@/components/admin-header";
 
 export default function AdminLayout({
   children,
@@ -18,4 +18,3 @@ export default function AdminLayout({
     </div>
   );
 }
-

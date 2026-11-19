@@ -1,21 +1,72 @@
-import { FinanceRequestDto } from '../dto/finance-request.dto';
-import { FinanceRequestItem } from '../models/finance-request.model';
+import { AdminSettlementApiItemDto } from "../dto/finance-request.dto";
+import {
+  FinanceRequestItem,
+  FinanceRequestStatus,
+} from "../models/finance-request.model";
 
-export function financeRequestDtoToModel(dto: FinanceRequestDto): FinanceRequestItem {
+export function adminSettlementApiToModel(
+  dto: AdminSettlementApiItemDto,
+): FinanceRequestItem {
+  let mappedStatus: FinanceRequestStatus = "pending";
+  if (dto.status === "paid") mappedStatus = "paid";
+  else if (dto.status === "rejected") mappedStatus = "rejected";
+  else if (dto.status === "approved") mappedStatus = "approved";
+  else mappedStatus = "pending";
+
+  const reqDate = dto.requestedAt
+    ? new Date(dto.requestedAt).toLocaleDateString("es-PE", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "-";
+
+  const paidDate = dto.paidAt
+    ? new Date(dto.paidAt).toLocaleDateString("es-PE", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : null;
+
   return {
-    code: dto.code,
-    type: dto.type,
-    eventTitle: dto.event_title,
-    organizerName: dto.organizer_name,
-    organizerRuc: dto.organizer_ruc,
-    bankName: dto.bank_name,
-    bankAccount: dto.bank_account,
-    grossAccumulatedFormatted: `S/ ${(dto.gross_accumulated_cents / 100).toFixed(2)}`,
-    platformFeeFormatted: `S/ ${(dto.platform_fee_cents / 100).toFixed(2)}`,
-    requestedAmountFormatted: `S/ ${(dto.requested_amount_cents / 100).toFixed(2)}`,
-    pctOfAvailableFormatted: dto.type === 'settlement' ? '100% (Final)' : `${dto.pct_of_available}%`,
-    status: dto.status,
-    requestedDate: dto.requested_date,
+    id: dto.id,
+    publicUuid: dto.publicUuid,
+    code: dto.code || `#LIQ-${dto.id}`,
+    type: "settlement",
+    eventId: dto.eventId,
+    eventTitle: dto.eventTitle,
+    eventCode: dto.eventCode,
+    eventStatus: dto.eventStatus,
+    organizerName: dto.organizerName || "Organizador",
+    organizerDocumentType: dto.organizerDocumentType || "RUC",
+    organizerDocumentNumber: dto.organizerDocumentNumber || "-",
+    bankName: dto.bankName || "No especificado",
+    bankAccountNumber: dto.bankAccountNumber || "-",
+    bankAccountCci: dto.bankAccountCci || null,
+    bankAccountHolder: dto.bankAccountHolder || dto.organizerName,
+    accountType: dto.accountType || null,
+    totalTicketsSold: dto.totalTicketsSold || 0,
+    grossAccumulatedFormatted: `S/ ${Number(dto.grossAmount || 0).toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    platformFeeFormatted: `S/ ${Number(dto.platformFeeAmount || 0).toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    couponsDiscountFormatted: `S/ ${Number(dto.totalCouponsDiscountAmount || 0).toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    requestedAmountFormatted: `S/ ${Number(dto.netPayoutAmount || 0).toLocaleString("es-PE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+    pctOfAvailableFormatted: "100% (Cierre Final)",
+    status: mappedStatus,
+    statusLabel:
+      dto.statusLabel ||
+      (mappedStatus === "paid"
+        ? "Liquidado y Pagado"
+        : "En Revisión (24h - 72h)"),
+    requestedDate: reqDate,
+    paidDate,
+    transferReference: dto.transferReference || null,
+    transferVoucherUrl: dto.transferVoucherUrl || null,
+    notes: dto.notes || null,
+    hoursElapsed: dto.hoursElapsed || 0,
   };
 }
-
