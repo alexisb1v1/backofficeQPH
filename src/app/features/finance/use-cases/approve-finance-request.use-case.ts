@@ -1,6 +1,6 @@
-import { ResultAsync } from 'neverthrow';
-import { DomainError } from '@/app/shared/errors/domain-error';
-import { FinanceRepository } from '../repositories/finance.repository';
+import { ResultAsync } from "neverthrow";
+import { DomainError } from "@/app/shared/errors/domain-error";
+import { FinanceRepository } from "../repositories/finance.repository";
 
 export class ApproveFinanceRequestUseCase {
   constructor(private readonly repository: FinanceRepository) {}
@@ -9,4 +9,3 @@ export class ApproveFinanceRequestUseCase {
     return this.repository.approveRequest(code);
   }
 }
-

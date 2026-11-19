@@ -1,10 +1,16 @@
-'use client';
+"use client";
 
-import React, { useRef, useState } from 'react';
-import { resolveApiBaseUrl } from '@/app/shared/utils/api-url';
-import { AUTH_COOKIE_NAME, getCookie } from '@/app/features/auth';
-import { compressImage } from '@/app/shared/utils/image-compressor';
-import { UploadCloud, CheckCircle, X, Image as ImageIcon, Loader2 } from 'lucide-react';
+import React, { useRef, useState } from "react";
+import { resolveApiBaseUrl } from "@/app/shared/utils/api-url";
+import { AUTH_COOKIE_NAME, getCookie } from "@/app/features/auth";
+import { compressImage } from "@/app/shared/utils/image-compressor";
+import {
+  UploadCloud,
+  CheckCircle,
+  X,
+  Image as ImageIcon,
+  Loader2,
+} from "lucide-react";
 
 interface VoucherUploaderProps {
   value?: string;
@@ -12,7 +18,11 @@ interface VoucherUploaderProps {
   folder?: string;
 }
 
-export function VoucherUploader({ value, onChange, folder = 'vouchers' }: VoucherUploaderProps) {
+export function VoucherUploader({
+  value,
+  onChange,
+  folder = "vouchers",
+}: VoucherUploaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -27,7 +37,7 @@ export function VoucherUploader({ value, onChange, folder = 'vouchers' }: Vouche
 
     // Límite de 15MB antes de comprimir
     if (file.size > 15 * 1024 * 1024) {
-      setErrorMsg('El comprobante no debe superar los 15MB.');
+      setErrorMsg("El comprobante no debe superar los 15MB.");
       return;
     }
 
@@ -39,59 +49,65 @@ export function VoucherUploader({ value, onChange, folder = 'vouchers' }: Vouche
         maxWidth: 1600,
         maxHeight: 2000,
         quality: 0.82,
-        targetFormat: 'image/webp',
+        targetFormat: "image/webp",
       });
 
       const fileToUpload = compressionResult.file;
       if (compressionResult.compressionRatio > 0) {
-        setReductionInfo(`Optimizado (-${compressionResult.compressionRatio}%)`);
+        setReductionInfo(
+          `Optimizado (-${compressionResult.compressionRatio}%)`,
+        );
       }
 
       // 2. Solicitar URL prefirmada al backend NestJS
       const token = getCookie(AUTH_COOKIE_NAME);
       const baseUrl = resolveApiBaseUrl();
       const presignedRes = await fetch(`${baseUrl}/media/presigned-url`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
+          "Content-Type": "application/json",
+          Accept: "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify({
           filename: fileToUpload.name,
-          contentType: fileToUpload.type || 'image/webp',
+          contentType: fileToUpload.type || "image/webp",
           folder,
         }),
       });
 
       if (!presignedRes.ok) {
         const errorData = await presignedRes.json().catch(() => null);
-        throw new Error(errorData?.message || 'Error al obtener URL de subida a R2');
+        throw new Error(
+          errorData?.message || "Error al obtener URL de subida a R2",
+        );
       }
 
       const presignedData = await presignedRes.json();
 
       // 3. Subir el archivo optimizado a Cloudflare R2 vía PUT
       const uploadRes = await fetch(presignedData.uploadUrl, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': fileToUpload.type || 'image/webp',
+          "Content-Type": fileToUpload.type || "image/webp",
         },
         body: fileToUpload,
       });
 
       if (!uploadRes.ok) {
-        throw new Error('No se pudo subir el voucher al almacenamiento Cloudflare R2.');
+        throw new Error(
+          "No se pudo subir el voucher al almacenamiento Cloudflare R2.",
+        );
       }
 
       onChange(presignedData.publicUrl);
     } catch (err: any) {
-      setErrorMsg(err.message || 'Error al procesar la imagen del voucher.');
+      setErrorMsg(err.message || "Error al procesar la imagen del voucher.");
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+        fileInputRef.current.value = "";
       }
     }
   };
@@ -126,7 +142,7 @@ export function VoucherUploader({ value, onChange, folder = 'vouchers' }: Vouche
           </div>
           <button
             type="button"
-            onClick={() => onChange('')}
+            onClick={() => onChange("")}
             className="p-1 rounded-lg text-on-surface-variant hover:text-red-600 transition-colors shrink-0"
             title="Quitar voucher"
           >
@@ -146,7 +162,9 @@ export function VoucherUploader({ value, onChange, folder = 'vouchers' }: Vouche
           ) : (
             <div className="flex items-center gap-2 text-xs text-on-surface-variant">
               <UploadCloud className="w-4 h-4 text-primary" />
-              <span className="font-semibold text-on-surface">Subir voucher bancario</span>
+              <span className="font-semibold text-on-surface">
+                Subir voucher bancario
+              </span>
               <span className="text-[10px] text-on-surface-variant/70">
                 (PNG, JPG o WebP - Reducción automática a R2/vouchers)
               </span>

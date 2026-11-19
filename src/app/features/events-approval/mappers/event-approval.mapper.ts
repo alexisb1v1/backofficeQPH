@@ -1,58 +1,67 @@
-import { ApiEventApprovalItemDto, ListEventApprovalsApiResponseDto } from '../dto/event-approval.dto';
-import { EventApprovalItem, PaginatedEventApprovalsModel, EventApprovalZoneModel } from '../models/event-approval.model';
+import {
+  ApiEventApprovalItemDto,
+  ListEventApprovalsApiResponseDto,
+} from "../dto/event-approval.dto";
+import {
+  EventApprovalItem,
+  PaginatedEventApprovalsModel,
+  EventApprovalZoneModel,
+} from "../models/event-approval.model";
 
 const CATEGORY_COLORS: Record<string, string> = {
-  CONCERTS: 'bg-purple-600',
-  THEATER: 'bg-orange-600',
-  SPORTS: 'bg-blue-600',
-  FESTIVALS: 'bg-pink-600',
-  COMEDY: 'bg-amber-600',
-  GASTRONOMY: 'bg-emerald-600',
+  CONCERTS: "bg-purple-600",
+  THEATER: "bg-orange-600",
+  SPORTS: "bg-blue-600",
+  FESTIVALS: "bg-pink-600",
+  COMEDY: "bg-amber-600",
+  GASTRONOMY: "bg-emerald-600",
 };
 
 const AGE_RESTRICTION_LABELS: Record<string, string> = {
-  ALL_AGES: 'Apto para todo público',
-  PLUS_14: 'Mayores de 14 años (+14)',
-  PLUS_18: 'Exclusivo mayores de 18 años (+18)',
-  PLUS_21: 'Exclusivo mayores de 21 años (+21)',
+  ALL_AGES: "Apto para todo público",
+  PLUS_14: "Mayores de 14 años (+14)",
+  PLUS_18: "Exclusivo mayores de 18 años (+18)",
+  PLUS_21: "Exclusivo mayores de 21 años (+21)",
 };
 
 function formatAgeRestriction(code?: string | null): string {
-  if (!code) return 'Apto para todo público';
+  if (!code) return "Apto para todo público";
   return AGE_RESTRICTION_LABELS[code.toUpperCase()] || code;
 }
 
 function formatDate(dateStr?: string | null): string {
-  if (!dateStr) return 'Fecha por programar';
+  if (!dateStr) return "Fecha por programar";
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString('es-PE', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return d.toLocaleDateString("es-PE", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   } catch {
     return dateStr;
   }
 }
 
-export function apiEventToModel(dto: ApiEventApprovalItemDto): EventApprovalItem {
-  const words = (dto.title || 'Evento').trim().split(' ').filter(Boolean);
+export function apiEventToModel(
+  dto: ApiEventApprovalItemDto,
+): EventApprovalItem {
+  const words = (dto.title || "Evento").trim().split(" ").filter(Boolean);
   const initials =
     words.length > 1
       ? (words[0][0] + words[1][0]).toUpperCase()
       : dto.title.slice(0, 2).toUpperCase();
 
-  const avatarBgColor = CATEGORY_COLORS[dto.category] || 'bg-indigo-600';
+  const avatarBgColor = CATEGORY_COLORS[dto.category] || "bg-indigo-600";
 
   const priceRange =
     dto.minPrice === 0 && dto.maxPrice === 0
-      ? 'Entrada libre'
+      ? "Entrada libre"
       : dto.minPrice === dto.maxPrice
-      ? `S/ ${dto.minPrice.toFixed(2)}`
-      : `S/ ${dto.minPrice.toFixed(0)} - S/ ${dto.maxPrice.toFixed(0)}`;
+        ? `S/ ${dto.minPrice.toFixed(2)}`
+        : `S/ ${dto.minPrice.toFixed(0)} - S/ ${dto.maxPrice.toFixed(0)}`;
 
   const mappedZones: EventApprovalZoneModel[] = (dto.zones || []).map((z) => {
     const regPrice = Number(z.regularPrice) || 0;
@@ -70,7 +79,7 @@ export function apiEventToModel(dto: ApiEventApprovalItemDto): EventApprovalItem
 
   const mappedShows = (dto.shows || []).map((s) => ({
     id: s.id,
-    name: s.name || 'Función Programada',
+    name: s.name || "Función Programada",
     startTime: s.startTime,
     startTimeFormatted: formatDate(s.startTime),
     durationHours: s.durationHours,
@@ -90,10 +99,10 @@ export function apiEventToModel(dto: ApiEventApprovalItemDto): EventApprovalItem
 
   const webBaseUrl = (
     process.env.NEXT_PUBLIC_WEB_URL ||
-    (process.env.NODE_ENV === 'production'
-      ? 'https://queplanhoy.com'
-      : 'https://dev.queplanhoy.com')
-  ).replace(/\/+$/, '');
+    (process.env.NODE_ENV === "production"
+      ? "https://queplanhoy.com"
+      : "https://dev.queplanhoy.com")
+  ).replace(/\/+$/, "");
 
   const landingUrl = dto.slug ? `${webBaseUrl}/e/${dto.slug}` : null;
 
@@ -103,16 +112,16 @@ export function apiEventToModel(dto: ApiEventApprovalItemDto): EventApprovalItem
     slug: dto.slug,
     title: dto.title,
     description: dto.description || null,
-    organizerName: dto.organizerName || 'Organizador independiente',
-    organizerDocumentNumber: dto.organizerDocumentNumber || 'No registrado',
+    organizerName: dto.organizerName || "Organizador independiente",
+    organizerDocumentNumber: dto.organizerDocumentNumber || "No registrado",
     organizerEmail: dto.organizerEmail || null,
     organizerPhone: dto.organizerPhone || null,
     category: dto.category,
     eventDateFormatted: formatDate(dto.firstShowDate),
-    venueName: dto.venue || 'Recinto por confirmar',
+    venueName: dto.venue || "Recinto por confirmar",
     venueAddress: dto.address || null,
     venueAddressReference: dto.addressReference || null,
-    venueCity: dto.city || 'Lima',
+    venueCity: dto.city || "Lima",
     googleMapsUrl: dto.googleMapsUrl || null,
     ageRestriction: formatAgeRestriction(dto.ageRestriction),
     entryRequirements: dto.entryRequirements || null,
@@ -122,7 +131,10 @@ export function apiEventToModel(dto: ApiEventApprovalItemDto): EventApprovalItem
     hasLandingPage: Boolean(dto.hasLandingPage),
     landingUrl,
     totalCapacity: dto.totalCapacity,
-    capacityFormatted: dto.totalCapacity > 0 ? `${dto.totalCapacity.toLocaleString()} pers.` : 'No asignado',
+    capacityFormatted:
+      dto.totalCapacity > 0
+        ? `${dto.totalCapacity.toLocaleString()} pers.`
+        : "No asignado",
     priceRangeFormatted: priceRange,
     minPrice: dto.minPrice,
     maxPrice: dto.maxPrice,

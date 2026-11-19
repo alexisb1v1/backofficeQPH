@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   getApprovalEventsUseCase,
   approveEventUseCase,
   observeEventUseCase,
   EventApprovalItem,
   PaginatedEventApprovalsModel,
-} from '@/app/features/events-approval';
+} from "@/app/features/events-approval";
 import {
   Search,
   Download,
@@ -39,32 +39,38 @@ import {
   HelpCircle,
   ChevronDown,
   ChevronUp,
-} from 'lucide-react';
+} from "lucide-react";
 
 export function EventsApprovalScreen() {
-  const [activeTab, setActiveTab] = useState<'in_review' | 'published' | 'observed'>('in_review');
-  const [searchInput, setSearchInput] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<
+    "in_review" | "published" | "observed"
+  >("in_review");
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
 
   const [loading, setLoading] = useState(true);
-  const [paginatedData, setPaginatedData] = useState<PaginatedEventApprovalsModel>({
-    items: [],
-    meta: {
-      total: 0,
-      page: 1,
-      limit: 10,
-      totalPages: 1,
-      pendingCount: 0,
-      publishedCount: 0,
-      observedCount: 0,
-    },
-  });
+  const [paginatedData, setPaginatedData] =
+    useState<PaginatedEventApprovalsModel>({
+      items: [],
+      meta: {
+        total: 0,
+        page: 1,
+        limit: 10,
+        totalPages: 1,
+        pendingCount: 0,
+        publishedCount: 0,
+        observedCount: 0,
+      },
+    });
 
-  const [selectedEvent, setSelectedEvent] = useState<EventApprovalItem | null>(null);
-  const [observingEvent, setObservingEvent] = useState<EventApprovalItem | null>(null);
-  const [observeReason, setObserveReason] = useState('');
+  const [selectedEvent, setSelectedEvent] = useState<EventApprovalItem | null>(
+    null,
+  );
+  const [observingEvent, setObservingEvent] =
+    useState<EventApprovalItem | null>(null);
+  const [observeReason, setObserveReason] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState<string | null>(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -106,7 +112,7 @@ export function EventsApprovalScreen() {
     loadEvents();
   }, [loadEvents]);
 
-  const handleTabChange = (tab: 'in_review' | 'published' | 'observed') => {
+  const handleTabChange = (tab: "in_review" | "published" | "observed") => {
     setActiveTab(tab);
     setPage(1);
   };
@@ -116,7 +122,9 @@ export function EventsApprovalScreen() {
     const result = await approveEventUseCase.execute(id);
     result.match(
       () => {
-        setFeedbackMessage('Evento aprobado y publicado exitosamente en la plataforma web.');
+        setFeedbackMessage(
+          "Evento aprobado y publicado exitosamente en la plataforma web.",
+        );
         setActionLoading(false);
         setSelectedEvent(null);
         loadEvents();
@@ -131,12 +139,17 @@ export function EventsApprovalScreen() {
   const handleObserve = async () => {
     if (!observingEvent) return;
     setActionLoading(true);
-    const result = await observeEventUseCase.execute(observingEvent.id, observeReason.trim());
+    const result = await observeEventUseCase.execute(
+      observingEvent.id,
+      observeReason.trim(),
+    );
     result.match(
       () => {
-        setFeedbackMessage('Evento marcado como observado. El promotor fue notificado con la observación.');
+        setFeedbackMessage(
+          "Evento marcado como observado. El promotor fue notificado con la observación.",
+        );
         setObservingEvent(null);
-        setObserveReason('');
+        setObserveReason("");
         setActionLoading(false);
         setSelectedEvent(null);
         loadEvents();
@@ -174,7 +187,9 @@ export function EventsApprovalScreen() {
               className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-surface-container-lowest text-on-surface hover:text-primary font-bold text-xs shadow-sm border border-surface-container transition-all cursor-pointer"
               title="Refrescar listado"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-primary' : 'text-on-surface-variant'}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin text-primary" : "text-on-surface-variant"}`}
+              />
               <span>Actualizar</span>
             </button>
             <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container-lowest text-on-surface hover:text-primary font-bold text-xs shadow-sm border border-surface-container transition-all">
@@ -259,7 +274,7 @@ export function EventsApprovalScreen() {
             />
             {searchInput && (
               <button
-                onClick={() => setSearchInput('')}
+                onClick={() => setSearchInput("")}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface p-1"
               >
                 <X className="w-3.5 h-3.5" />
@@ -271,11 +286,11 @@ export function EventsApprovalScreen() {
           <div className="flex items-center gap-1.5 p-1 rounded-xl bg-surface-container-low border border-surface-container text-xs font-semibold">
             <button
               type="button"
-              onClick={() => handleTabChange('in_review')}
+              onClick={() => handleTabChange("in_review")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTab === 'in_review'
-                  ? 'bg-surface-container-lowest text-primary shadow-xs font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                activeTab === "in_review"
+                  ? "bg-surface-container-lowest text-primary shadow-xs font-bold"
+                  : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
               <FileCheck className="w-3.5 h-3.5" />
@@ -283,11 +298,11 @@ export function EventsApprovalScreen() {
             </button>
             <button
               type="button"
-              onClick={() => handleTabChange('published')}
+              onClick={() => handleTabChange("published")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTab === 'published'
-                  ? 'bg-surface-container-lowest text-primary shadow-xs font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                activeTab === "published"
+                  ? "bg-surface-container-lowest text-primary shadow-xs font-bold"
+                  : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
               <CheckCircle className="w-3.5 h-3.5" />
@@ -295,11 +310,11 @@ export function EventsApprovalScreen() {
             </button>
             <button
               type="button"
-              onClick={() => handleTabChange('observed')}
+              onClick={() => handleTabChange("observed")}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTab === 'observed'
-                  ? 'bg-surface-container-lowest text-primary shadow-xs font-bold'
-                  : 'text-on-surface-variant hover:text-on-surface'
+                activeTab === "observed"
+                  ? "bg-surface-container-lowest text-primary shadow-xs font-bold"
+                  : "text-on-surface-variant hover:text-on-surface"
               }`}
             >
               <AlertTriangle className="w-3.5 h-3.5" />
@@ -326,21 +341,32 @@ export function EventsApprovalScreen() {
               <tbody className="divide-y divide-surface-container/60">
                 {loading ? (
                   <tr>
-                    <td colSpan={7} className="py-16 text-center text-on-surface-variant">
+                    <td
+                      colSpan={7}
+                      className="py-16 text-center text-on-surface-variant"
+                    >
                       <div className="flex flex-col items-center justify-center gap-3">
                         <Loader2 className="w-7 h-7 animate-spin text-primary" />
-                        <span className="font-semibold text-xs">Consultando catálogo de eventos...</span>
+                        <span className="font-semibold text-xs">
+                          Consultando catálogo de eventos...
+                        </span>
                       </div>
                     </td>
                   </tr>
                 ) : paginatedData.items.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-16 text-center text-on-surface-variant">
+                    <td
+                      colSpan={7}
+                      className="py-16 text-center text-on-surface-variant"
+                    >
                       <div className="flex flex-col items-center justify-center gap-2 max-w-sm mx-auto">
                         <Search className="w-8 h-8 text-outline" />
-                        <h4 className="font-bold text-sm text-on-surface">No hay eventos en esta sección</h4>
+                        <h4 className="font-bold text-sm text-on-surface">
+                          No hay eventos en esta sección
+                        </h4>
                         <p className="text-xs text-outline leading-relaxed">
-                          No se encontraron solicitudes con el estado seleccionado o los términos de búsqueda.
+                          No se encontraron solicitudes con el estado
+                          seleccionado o los términos de búsqueda.
                         </p>
                       </div>
                     </td>
@@ -360,14 +386,17 @@ export function EventsApprovalScreen() {
                             {ev.avatarInitials}
                           </div>
                           <div className="flex flex-col min-w-0">
-                            <span className="font-bold text-on-surface truncate leading-tight" title={ev.title}>
+                            <span
+                              className="font-bold text-on-surface truncate leading-tight"
+                              title={ev.title}
+                            >
                               {ev.title}
                             </span>
                             <div className="flex items-center gap-1.5 pt-0.5">
                               <span className="text-[10px] text-primary font-semibold uppercase tracking-wider leading-tight">
                                 {ev.category}
                               </span>
-                              {ev.status === 'observed' && (
+                              {ev.status === "observed" && (
                                 <span className="inline-flex items-center gap-0.5 px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 border border-amber-300 font-bold text-[9px] uppercase tracking-wider">
                                   <AlertTriangle className="w-2.5 h-2.5 text-amber-700" />
                                   <span>Observado</span>
@@ -389,7 +418,10 @@ export function EventsApprovalScreen() {
                       {/* Organizador */}
                       <td className="py-3 px-4">
                         <div className="flex flex-col min-w-0">
-                          <span className="font-bold text-on-surface truncate leading-tight" title={ev.organizerName}>
+                          <span
+                            className="font-bold text-on-surface truncate leading-tight"
+                            title={ev.organizerName}
+                          >
                             {ev.organizerName}
                           </span>
                           <span className="font-mono text-[10px] text-on-surface-variant leading-tight">
@@ -401,7 +433,10 @@ export function EventsApprovalScreen() {
                       {/* Recinto */}
                       <td className="py-3 px-4">
                         <div className="flex flex-col min-w-0">
-                          <span className="font-medium text-on-surface truncate leading-tight" title={ev.venueName}>
+                          <span
+                            className="font-medium text-on-surface truncate leading-tight"
+                            title={ev.venueName}
+                          >
                             {ev.venueName}
                           </span>
                           <span className="text-[10px] text-on-surface-variant flex items-center gap-0.5 leading-tight">
@@ -415,7 +450,9 @@ export function EventsApprovalScreen() {
                       <td className="py-3 px-4 text-on-surface text-[11px] font-medium">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3 text-on-surface-variant flex-shrink-0" />
-                          <span className="truncate">{ev.eventDateFormatted}</span>
+                          <span className="truncate">
+                            {ev.eventDateFormatted}
+                          </span>
                         </div>
                       </td>
 
@@ -446,7 +483,7 @@ export function EventsApprovalScreen() {
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          {ev.status !== 'published' && (
+                          {ev.status !== "published" && (
                             <button
                               onClick={() => handleApprove(ev.id)}
                               disabled={actionLoading}
@@ -456,7 +493,7 @@ export function EventsApprovalScreen() {
                               Aprobar
                             </button>
                           )}
-                          {ev.status !== 'observed' && (
+                          {ev.status !== "observed" && (
                             <button
                               onClick={() => setObservingEvent(ev)}
                               disabled={actionLoading}
@@ -478,7 +515,9 @@ export function EventsApprovalScreen() {
           {/* Pagination Footer */}
           <div className="p-4 bg-surface-container-low border-t border-surface-container flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
             <span className="text-on-surface-variant font-medium">
-              Mostrando {paginatedData.items.length} de {paginatedData.meta.total} eventos (Página {paginatedData.meta.page} de {paginatedData.meta.totalPages})
+              Mostrando {paginatedData.items.length} de{" "}
+              {paginatedData.meta.total} eventos (Página{" "}
+              {paginatedData.meta.page} de {paginatedData.meta.totalPages})
             </span>
 
             <div className="flex items-center gap-2">
@@ -496,7 +535,10 @@ export function EventsApprovalScreen() {
               </div>
 
               <button
-                disabled={paginatedData.meta.page >= paginatedData.meta.totalPages || loading}
+                disabled={
+                  paginatedData.meta.page >= paginatedData.meta.totalPages ||
+                  loading
+                }
                 onClick={() => setPage((prev) => prev + 1)}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-xl bg-surface-container-lowest border border-surface-container font-semibold text-on-surface disabled:opacity-40 disabled:cursor-not-allowed hover:bg-surface-container transition-all cursor-pointer"
               >
@@ -567,11 +609,13 @@ export function EventsApprovalScreen() {
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       selectedEvent.hasLandingPage
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-surface-container-high text-on-surface-variant'
+                        ? "bg-emerald-100 text-emerald-800"
+                        : "bg-surface-container-high text-on-surface-variant"
                     }`}
                   >
-                    {selectedEvent.hasLandingPage ? 'Aplica Landing Dedicada' : 'Landing Estándar'}
+                    {selectedEvent.hasLandingPage
+                      ? "Aplica Landing Dedicada"
+                      : "Landing Estándar"}
                   </span>
                 </div>
 
@@ -583,7 +627,9 @@ export function EventsApprovalScreen() {
                       rel="noopener noreferrer"
                       className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container hover:border-primary text-primary font-semibold transition-all group"
                     >
-                      <span className="truncate text-xs">Ver Portada Original</span>
+                      <span className="truncate text-xs">
+                        Ver Portada Original
+                      </span>
                       <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 ml-1 group-hover:translate-x-0.5 transition-transform" />
                     </a>
                   ) : (
@@ -599,7 +645,9 @@ export function EventsApprovalScreen() {
                       rel="noopener noreferrer"
                       className="flex items-center justify-between p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container hover:border-primary text-primary font-semibold transition-all group"
                     >
-                      <span className="truncate text-xs">Previsualizar Landing</span>
+                      <span className="truncate text-xs">
+                        Previsualizar Landing
+                      </span>
                       <ExternalLink className="w-3.5 h-3.5 flex-shrink-0 ml-1 group-hover:translate-x-0.5 transition-transform" />
                     </a>
                   ) : (
@@ -617,25 +665,31 @@ export function EventsApprovalScreen() {
                     <FileText className="w-3.5 h-3.5 text-primary" />
                     Descripción del Evento
                   </span>
-                  {selectedEvent.description && selectedEvent.description.length > 200 && (
-                    <button
-                      type="button"
-                      onClick={() => setShowFullDescription(!showFullDescription)}
-                      className="text-[11px] text-primary hover:underline font-semibold cursor-pointer"
-                    >
-                      {showFullDescription ? 'Ver menos' : 'Ver más...'}
-                    </button>
-                  )}
+                  {selectedEvent.description &&
+                    selectedEvent.description.length > 200 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowFullDescription(!showFullDescription)
+                        }
+                        className="text-[11px] text-primary hover:underline font-semibold cursor-pointer"
+                      >
+                        {showFullDescription ? "Ver menos" : "Ver más..."}
+                      </button>
+                    )}
                 </div>
                 <div className="text-on-surface-variant leading-relaxed text-[11px] whitespace-pre-line">
                   {selectedEvent.description ? (
-                    showFullDescription || selectedEvent.description.length <= 200 ? (
+                    showFullDescription ||
+                    selectedEvent.description.length <= 200 ? (
                       selectedEvent.description
                     ) : (
                       `${selectedEvent.description.slice(0, 200)}...`
                     )
                   ) : (
-                    <span className="italic text-on-surface-variant/70">Sin descripción registrada.</span>
+                    <span className="italic text-on-surface-variant/70">
+                      Sin descripción registrada.
+                    </span>
                   )}
                 </div>
               </div>
@@ -648,19 +702,27 @@ export function EventsApprovalScreen() {
                 </h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
                   <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
-                    <span className="text-on-surface-variant text-[10px] block">Razón Social / Promotor</span>
-                    <span className="font-bold text-on-surface text-xs block truncate">{selectedEvent.organizerName}</span>
+                    <span className="text-on-surface-variant text-[10px] block">
+                      Razón Social / Promotor
+                    </span>
+                    <span className="font-bold text-on-surface text-xs block truncate">
+                      {selectedEvent.organizerName}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
-                    <span className="text-on-surface-variant text-[10px] block">RUC / DNI Tributario</span>
-                    <span className="font-mono font-bold text-on-surface text-xs block">{selectedEvent.organizerDocumentNumber}</span>
+                    <span className="text-on-surface-variant text-[10px] block">
+                      RUC / DNI Tributario
+                    </span>
+                    <span className="font-mono font-bold text-on-surface text-xs block">
+                      {selectedEvent.organizerDocumentNumber}
+                    </span>
                   </div>
                   <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
                     <span className="text-on-surface-variant text-[10px] block flex items-center gap-1">
                       <Mail className="w-3 h-3" /> Correo Electrónico
                     </span>
                     <span className="font-medium text-on-surface text-xs block truncate">
-                      {selectedEvent.organizerEmail || 'No especificado'}
+                      {selectedEvent.organizerEmail || "No especificado"}
                     </span>
                   </div>
                   <div className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container">
@@ -668,7 +730,7 @@ export function EventsApprovalScreen() {
                       <Phone className="w-3 h-3" /> Teléfono de Contacto
                     </span>
                     <span className="font-medium text-on-surface text-xs block">
-                      {selectedEvent.organizerPhone || 'No especificado'}
+                      {selectedEvent.organizerPhone || "No especificado"}
                     </span>
                   </div>
                 </div>
@@ -694,28 +756,48 @@ export function EventsApprovalScreen() {
                 </div>
                 <div className="space-y-2 pt-1">
                   <div className="flex justify-between py-1 border-b border-surface-container">
-                    <span className="text-on-surface-variant">Recinto / Establecimiento</span>
-                    <span className="font-semibold text-on-surface">{selectedEvent.venueName}</span>
+                    <span className="text-on-surface-variant">
+                      Recinto / Establecimiento
+                    </span>
+                    <span className="font-semibold text-on-surface">
+                      {selectedEvent.venueName}
+                    </span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-surface-container">
-                    <span className="text-on-surface-variant">Ciudad / Ubigeo</span>
-                    <span className="font-semibold text-on-surface">{selectedEvent.venueCity}</span>
+                    <span className="text-on-surface-variant">
+                      Ciudad / Ubigeo
+                    </span>
+                    <span className="font-semibold text-on-surface">
+                      {selectedEvent.venueCity}
+                    </span>
                   </div>
                   {selectedEvent.venueAddress && (
                     <div className="flex justify-between py-1 border-b border-surface-container">
-                      <span className="text-on-surface-variant">Dirección Física</span>
-                      <span className="font-medium text-on-surface text-right">{selectedEvent.venueAddress}</span>
+                      <span className="text-on-surface-variant">
+                        Dirección Física
+                      </span>
+                      <span className="font-medium text-on-surface text-right">
+                        {selectedEvent.venueAddress}
+                      </span>
                     </div>
                   )}
                   {selectedEvent.venueAddressReference && (
                     <div className="flex justify-between py-1 border-b border-surface-container">
-                      <span className="text-on-surface-variant">Referencia</span>
-                      <span className="font-medium text-on-surface text-right">{selectedEvent.venueAddressReference}</span>
+                      <span className="text-on-surface-variant">
+                        Referencia
+                      </span>
+                      <span className="font-medium text-on-surface text-right">
+                        {selectedEvent.venueAddressReference}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between py-1">
-                    <span className="text-on-surface-variant">Aforo Total Declarado</span>
-                    <span className="font-mono font-bold text-on-surface">{selectedEvent.capacityFormatted} personas</span>
+                    <span className="text-on-surface-variant">
+                      Aforo Total Declarado
+                    </span>
+                    <span className="font-mono font-bold text-on-surface">
+                      {selectedEvent.capacityFormatted} personas
+                    </span>
                   </div>
                 </div>
               </div>
@@ -728,25 +810,37 @@ export function EventsApprovalScreen() {
                 </h4>
                 <div className="space-y-2 pt-1">
                   <div className="flex justify-between py-1 border-b border-surface-container">
-                    <span className="text-on-surface-variant">Restricción de Edad</span>
+                    <span className="text-on-surface-variant">
+                      Restricción de Edad
+                    </span>
                     <span className="font-bold text-on-surface">
-                      {selectedEvent.ageRestriction || 'Apto para todo público'}
+                      {selectedEvent.ageRestriction || "Apto para todo público"}
                     </span>
                   </div>
                   {selectedEvent.entryRequirements && (
                     <div className="py-1 border-b border-surface-container">
-                      <span className="text-on-surface-variant block mb-0.5">Requisitos de Ingreso</span>
-                      <span className="text-on-surface font-medium block">{selectedEvent.entryRequirements}</span>
+                      <span className="text-on-surface-variant block mb-0.5">
+                        Requisitos de Ingreso
+                      </span>
+                      <span className="text-on-surface font-medium block">
+                        {selectedEvent.entryRequirements}
+                      </span>
                     </div>
                   )}
                   {selectedEvent.openingHoursComment && (
                     <div className="py-1 border-b border-surface-container">
-                      <span className="text-on-surface-variant block mb-0.5">Horarios de Apertura de Puertas</span>
-                      <span className="text-on-surface font-medium block">{selectedEvent.openingHoursComment}</span>
+                      <span className="text-on-surface-variant block mb-0.5">
+                        Horarios de Apertura de Puertas
+                      </span>
+                      <span className="text-on-surface font-medium block">
+                        {selectedEvent.openingHoursComment}
+                      </span>
                     </div>
                   )}
                   <div className="flex justify-between py-1 items-center">
-                    <span className="text-on-surface-variant">Términos y Condiciones</span>
+                    <span className="text-on-surface-variant">
+                      Términos y Condiciones
+                    </span>
                     {selectedEvent.termsAndConditionsUrl ? (
                       <a
                         href={selectedEvent.termsAndConditionsUrl}
@@ -757,7 +851,9 @@ export function EventsApprovalScreen() {
                         Ver Documento PDF <ExternalLink className="w-3 h-3" />
                       </a>
                     ) : (
-                      <span className="text-on-surface-variant/70 italic">No adjuntado</span>
+                      <span className="text-on-surface-variant/70 italic">
+                        No adjuntado
+                      </span>
                     )}
                   </div>
                 </div>
@@ -777,7 +873,8 @@ export function EventsApprovalScreen() {
                 <div className="space-y-2 pt-1">
                   {selectedEvent.shows.length === 0 ? (
                     <div className="p-3 text-center text-on-surface-variant text-[11px] bg-surface-container rounded-lg">
-                      No hay shows registrados. Primera fecha: {selectedEvent.eventDateFormatted}
+                      No hay shows registrados. Primera fecha:{" "}
+                      {selectedEvent.eventDateFormatted}
                     </div>
                   ) : (
                     selectedEvent.shows.map((show, idx) => (
@@ -786,9 +883,12 @@ export function EventsApprovalScreen() {
                         className="p-2.5 rounded-lg bg-surface-container-lowest border border-surface-container flex items-center justify-between"
                       >
                         <div>
-                          <span className="font-bold text-on-surface text-xs block">{show.name}</span>
+                          <span className="font-bold text-on-surface text-xs block">
+                            {show.name}
+                          </span>
                           <span className="text-[10px] text-on-surface-variant flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {show.startTimeFormatted}
+                            <Clock className="w-3 h-3" />{" "}
+                            {show.startTimeFormatted}
                           </span>
                         </div>
                         {show.durationHours && (
@@ -826,31 +926,45 @@ export function EventsApprovalScreen() {
                         className="p-3 rounded-lg bg-surface-container-lowest border border-surface-container space-y-1.5"
                       >
                         <div className="flex items-center justify-between">
-                          <span className="font-bold text-on-surface text-xs">{zone.name}</span>
+                          <span className="font-bold text-on-surface text-xs">
+                            {zone.name}
+                          </span>
                           <span className="font-mono text-[11px] text-on-surface-variant">
                             Aforo: {zone.capacity.toLocaleString()}
                           </span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 text-[11px] pt-1 border-t border-surface-container">
                           <div>
-                            <span className="text-on-surface-variant block text-[10px]">Precio Base</span>
-                            <span className="font-bold text-on-surface">S/ {zone.regularPrice.toFixed(2)}</span>
+                            <span className="text-on-surface-variant block text-[10px]">
+                              Precio Base
+                            </span>
+                            <span className="font-bold text-on-surface">
+                              S/ {zone.regularPrice.toFixed(2)}
+                            </span>
                           </div>
                           <div>
-                            <span className="text-on-surface-variant block text-[10px]">Comisión QPH</span>
-                            <span className="font-bold text-primary">S/ {zone.serviceFee.toFixed(2)}</span>
+                            <span className="text-on-surface-variant block text-[10px]">
+                              Comisión QPH
+                            </span>
+                            <span className="font-bold text-primary">
+                              S/ {zone.serviceFee.toFixed(2)}
+                            </span>
                           </div>
                           <div className="text-right">
-                            <span className="text-on-surface-variant block text-[10px]">Paga Cliente</span>
-                            <span className="font-bold text-emerald-700">S/ {zone.buyerPrice.toFixed(2)}</span>
+                            <span className="text-on-surface-variant block text-[10px]">
+                              Paga Cliente
+                            </span>
+                            <span className="font-bold text-emerald-700">
+                              S/ {zone.buyerPrice.toFixed(2)}
+                            </span>
                           </div>
                         </div>
                         <div className="text-[10px] text-on-surface-variant flex items-center gap-1 pt-0.5">
                           <Info className="w-3 h-3 text-primary flex-shrink-0" />
                           <span>
                             {zone.feeIncluded
-                              ? 'Comisión incluida en el precio (se descuenta al promotor)'
-                              : 'Comisión sumada al comprador en el checkout'}
+                              ? "Comisión incluida en el precio (se descuenta al promotor)"
+                              : "Comisión sumada al comprador en el checkout"}
                           </span>
                         </div>
                       </div>
@@ -886,7 +1000,7 @@ export function EventsApprovalScreen() {
                             {coupon.code}
                           </span>
                           <span className="text-[11px] text-on-surface">
-                            {coupon.discountType === 'percentage'
+                            {coupon.discountType === "percentage"
                               ? `${coupon.discountValue}% OFF`
                               : `S/ ${coupon.discountValue.toFixed(2)} OFF`}
                           </span>
@@ -955,14 +1069,14 @@ export function EventsApprovalScreen() {
                 >
                   Cerrar
                 </button>
-                {selectedEvent.status !== 'published' && (
+                {selectedEvent.status !== "published" && (
                   <button
                     type="button"
                     disabled={actionLoading}
                     onClick={() => handleApprove(selectedEvent.id)}
                     className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer disabled:opacity-50"
                   >
-                    {actionLoading ? 'Procesando...' : 'Aprobar Evento'}
+                    {actionLoading ? "Procesando..." : "Aprobar Evento"}
                   </button>
                 )}
               </div>
@@ -978,7 +1092,9 @@ export function EventsApprovalScreen() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-rose-600">
                 <AlertTriangle className="w-5 h-5" />
-                <h3 className="font-bold text-base text-on-surface">Observar Evento</h3>
+                <h3 className="font-bold text-base text-on-surface">
+                  Observar Evento
+                </h3>
               </div>
               <button
                 onClick={() => setObservingEvent(null)}
@@ -989,7 +1105,10 @@ export function EventsApprovalScreen() {
             </div>
 
             <p className="text-xs text-on-surface-variant">
-              Indica las observaciones técnicas, legales o de recinto que el promotor de <strong>{observingEvent.title}</strong> debe corregir antes de ser aprobado. Este mensaje se grabará en la base de datos en <code>observation_reason</code>.
+              Indica las observaciones técnicas, legales o de recinto que el
+              promotor de <strong>{observingEvent.title}</strong> debe corregir
+              antes de ser aprobado. Este mensaje se grabará en la base de datos
+              en <code>observation_reason</code>.
             </p>
 
             <textarea
@@ -1014,7 +1133,7 @@ export function EventsApprovalScreen() {
                 onClick={handleObserve}
                 className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer disabled:opacity-50"
               >
-                {actionLoading ? 'Guardando...' : 'Confirmar Observación'}
+                {actionLoading ? "Guardando..." : "Confirmar Observación"}
               </button>
             </div>
           </div>

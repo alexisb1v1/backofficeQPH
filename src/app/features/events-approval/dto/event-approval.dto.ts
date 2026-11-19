@@ -32,7 +32,7 @@ export interface ApiEventApprovalItemDto {
   title: string;
   description: string | null;
   category: string;
-  status: 'pending' | 'in_review' | 'published' | 'observed';
+  status: "pending" | "in_review" | "published" | "observed";
   observationReason: string | null;
   venue: string | null;
   address: string | null;
@@ -76,7 +76,7 @@ export interface ListEventApprovalsApiResponseDto {
 }
 
 export interface ListEventApprovalsFiltersDto {
-  status?: 'pending' | 'in_review' | 'published' | 'observed' | 'all';
+  status?: "pending" | "in_review" | "published" | "observed" | "all";
   search?: string;
   page?: number;
   limit?: number;

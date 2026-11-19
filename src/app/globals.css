@@ -9,12 +9,12 @@
   --color-primary-fixed-dim: #c0c1ff;
   --color-on-primary-fixed: #07006c;
   --color-on-primary-fixed-variant: #2f2ebe;
-  
-  --color-electric-indigo: #6366F1;
-  --color-deep-slate: #0F172A;
-  --color-platinum-silver: #94A3B8;
-  --color-vip-gold: #F59E0B;
-  --color-surface-gray: #F1F5F9;
+
+  --color-electric-indigo: #6366f1;
+  --color-deep-slate: #0f172a;
+  --color-platinum-silver: #94a3b8;
+  --color-vip-gold: #f59e0b;
+  --color-surface-gray: #f1f5f9;
 
   --color-secondary: #565e74;
   --color-secondary-container: #dae2fd;
@@ -55,15 +55,20 @@
 }
 
 @layer base {
-  html, body {
+  html,
+  body {
     margin: 0;
     padding: 0;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family:
+      "Inter",
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
 }
 
 .material-symbols-outlined {
-  font-family: 'Material Symbols Outlined';
+  font-family: "Material Symbols Outlined";
   font-weight: normal;
   font-style: normal;
   font-size: 24px;
@@ -74,7 +79,6 @@
   white-space: nowrap;
   word-wrap: normal;
   direction: ltr;
-  -webkit-font-feature-settings: 'liga';
+  -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
 }
-

@@ -1,5 +1,5 @@
-export type FinanceRequestType = 'advance' | 'settlement';
-export type FinanceRequestStatus = 'pending' | 'approved' | 'paid' | 'rejected';
+export type FinanceRequestType = "advance" | "settlement";
+export type FinanceRequestStatus = "pending" | "approved" | "paid" | "rejected";
 
 export interface FinanceRequestItem {
   id: string;

@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   getFinanceRequestsUseCase,
   markFinanceRequestPaidUseCase,
   rejectFinanceRequestUseCase,
   FinanceRequestItem,
-} from '@/app/features/finance';
+} from "@/app/features/finance";
 import {
   Lock,
   ArrowUpRight,
@@ -24,32 +24,44 @@ import {
   ExternalLink,
   Copy,
   Check as CheckIcon,
-} from 'lucide-react';
-import { VoucherUploader } from '@/app/shared/components/voucher-uploader';
+} from "lucide-react";
+import { VoucherUploader } from "@/app/shared/components/voucher-uploader";
 
 export function FinanceScreen() {
-  const [activeTab, setActiveTab] = useState<'advance' | 'settlement'>('settlement');
+  const [activeTab, setActiveTab] = useState<"advance" | "settlement">(
+    "settlement",
+  );
   const [requests, setRequests] = useState<FinanceRequestItem[]>([]);
-  const [selectedReq, setSelectedReq] = useState<FinanceRequestItem | null>(null);
-  const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [selectedReq, setSelectedReq] = useState<FinanceRequestItem | null>(
+    null,
+  );
+  const [feedbackMessage, setFeedbackMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Estados del modal de pago/despacho
-  const [transferReference, setTransferReference] = useState('');
-  const [transferVoucherUrl, setTransferVoucherUrl] = useState('');
-  const [paymentNotes, setPaymentNotes] = useState('');
+  const [transferReference, setTransferReference] = useState("");
+  const [transferVoucherUrl, setTransferVoucherUrl] = useState("");
+  const [paymentNotes, setPaymentNotes] = useState("");
   const [isSubmittingPay, setIsSubmittingPay] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   // Estados del modal de rechazo
-  const [rejectModalItem, setRejectModalItem] = useState<FinanceRequestItem | null>(null);
-  const [rejectReason, setRejectReason] = useState('');
+  const [rejectModalItem, setRejectModalItem] =
+    useState<FinanceRequestItem | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
   const [isSubmittingReject, setIsSubmittingReject] = useState(false);
 
   const loadRequests = async () => {
     const result = await getFinanceRequestsUseCase.execute();
     result.match(
       (data) => setRequests(data),
-      (err) => setFeedbackMessage({ type: 'error', text: `Error al cargar liquidaciones: ${err.message}` })
+      (err) =>
+        setFeedbackMessage({
+          type: "error",
+          text: `Error al cargar liquidaciones: ${err.message}`,
+        }),
     );
   };
 
@@ -61,9 +73,9 @@ export function FinanceScreen() {
 
   const openAuditModal = (req: FinanceRequestItem) => {
     setSelectedReq(req);
-    setTransferReference(req.transferReference || '');
-    setTransferVoucherUrl(req.transferVoucherUrl || '');
-    setPaymentNotes('');
+    setTransferReference(req.transferReference || "");
+    setTransferVoucherUrl(req.transferVoucherUrl || "");
+    setPaymentNotes("");
   };
 
   const copyToClipboard = (text: string, fieldName: string) => {
@@ -76,7 +88,10 @@ export function FinanceScreen() {
     e.preventDefault();
     if (!selectedReq) return;
     if (!transferReference.trim()) {
-      setFeedbackMessage({ type: 'error', text: 'El número de operación bancaria es obligatorio para liquidar.' });
+      setFeedbackMessage({
+        type: "error",
+        text: "El número de operación bancaria es obligatorio para liquidar.",
+      });
       return;
     }
 
@@ -90,15 +105,18 @@ export function FinanceScreen() {
     result.match(
       () => {
         setFeedbackMessage({
-          type: 'success',
+          type: "success",
           text: `Liquidación ${selectedReq.code} despachada y pagada con éxito.`,
         });
         setSelectedReq(null);
         loadRequests();
       },
       (err) => {
-        setFeedbackMessage({ type: 'error', text: `Error al pagar: ${err.message}` });
-      }
+        setFeedbackMessage({
+          type: "error",
+          text: `Error al pagar: ${err.message}`,
+        });
+      },
     );
     setIsSubmittingPay(false);
   };
@@ -107,38 +125,51 @@ export function FinanceScreen() {
     e.preventDefault();
     if (!rejectModalItem) return;
     if (!rejectReason.trim()) {
-      setFeedbackMessage({ type: 'error', text: 'Debe ingresar un motivo para rechazar la liquidación.' });
+      setFeedbackMessage({
+        type: "error",
+        text: "Debe ingresar un motivo para rechazar la liquidación.",
+      });
       return;
     }
 
     setIsSubmittingReject(true);
-    const result = await rejectFinanceRequestUseCase.execute(rejectModalItem.id, {
-      reason: rejectReason.trim(),
-    });
+    const result = await rejectFinanceRequestUseCase.execute(
+      rejectModalItem.id,
+      {
+        reason: rejectReason.trim(),
+      },
+    );
 
     result.match(
       () => {
         setFeedbackMessage({
-          type: 'success',
+          type: "success",
           text: `Liquidación ${rejectModalItem.code} fue rechazada correctamente.`,
         });
         setRejectModalItem(null);
         setSelectedReq(null);
-        setRejectReason('');
+        setRejectReason("");
         loadRequests();
       },
       (err) => {
-        setFeedbackMessage({ type: 'error', text: `Error al rechazar: ${err.message}` });
-      }
+        setFeedbackMessage({
+          type: "error",
+          text: `Error al rechazar: ${err.message}`,
+        });
+      },
     );
     setIsSubmittingReject(false);
   };
 
   // Métricas agregadas
-  const pendingSettlements = requests.filter((r) => r.type === 'settlement' && r.status === 'pending');
-  const paidSettlements = requests.filter((r) => r.type === 'settlement' && r.status === 'paid');
+  const pendingSettlements = requests.filter(
+    (r) => r.type === "settlement" && r.status === "pending",
+  );
+  const paidSettlements = requests.filter(
+    (r) => r.type === "settlement" && r.status === "paid",
+  );
   const totalPendingAmount = pendingSettlements.reduce((acc, curr) => {
-    const raw = curr.requestedAmountFormatted.replace(/[^\d.]/g, '');
+    const raw = curr.requestedAmountFormatted.replace(/[^\d.]/g, "");
     return acc + (parseFloat(raw) || 0);
   }, 0);
 
@@ -176,13 +207,16 @@ export function FinanceScreen() {
         {feedbackMessage && (
           <div
             className={`p-4 rounded-xl text-xs font-semibold flex items-center justify-between border ${
-              feedbackMessage.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                : 'bg-red-50 text-red-800 border-red-200'
+              feedbackMessage.type === "success"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                : "bg-red-50 text-red-800 border-red-200"
             }`}
           >
             <span>{feedbackMessage.text}</span>
-            <button onClick={() => setFeedbackMessage(null)} className="hover:opacity-75">
+            <button
+              onClick={() => setFeedbackMessage(null)}
+              className="hover:opacity-75"
+            >
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -192,58 +226,85 @@ export function FinanceScreen() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">Pendiente Desembolso</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Pendiente Desembolso
+              </span>
               <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-800">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-4 flex flex-col">
               <span className="text-2xl font-black text-on-surface">
-                S/ {totalPendingAmount.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                S/{" "}
+                {totalPendingAmount.toLocaleString("es-PE", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </span>
               <div className="flex items-center gap-1.5 mt-1 text-xs text-amber-800 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span>{pendingSettlements.length} en espera de transferencia bancaria</span>
+                <span>
+                  {pendingSettlements.length} en espera de transferencia
+                  bancaria
+                </span>
               </div>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">Eventos en Revisión</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Eventos en Revisión
+              </span>
               <div className="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
                 <FileText className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-4 flex flex-col">
-              <span className="text-2xl font-black text-on-surface">{pendingSettlements.length} solicitudes</span>
-              <span className="text-xs text-on-surface-variant mt-1">Concluidos con ventas auditadas</span>
+              <span className="text-2xl font-black text-on-surface">
+                {pendingSettlements.length} solicitudes
+              </span>
+              <span className="text-xs text-on-surface-variant mt-1">
+                Concluidos con ventas auditadas
+              </span>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">Total Liquidados</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Total Liquidados
+              </span>
               <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-800">
                 <CheckCircle className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-4 flex flex-col">
-              <span className="text-2xl font-black text-emerald-800">{paidSettlements.length} pagos</span>
-              <span className="text-xs text-on-surface-variant mt-1">Transferencias confirmadas</span>
+              <span className="text-2xl font-black text-emerald-800">
+                {paidSettlements.length} pagos
+              </span>
+              <span className="text-xs text-on-surface-variant mt-1">
+                Transferencias confirmadas
+              </span>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">SLA de Tesorería</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                SLA de Tesorería
+              </span>
               <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-700">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-4 flex flex-col">
-              <span className="text-2xl font-black text-blue-700">24h - 72h</span>
-              <span className="text-xs text-on-surface-variant mt-1">Ventana oficial de pago</span>
+              <span className="text-2xl font-black text-blue-700">
+                24h - 72h
+              </span>
+              <span className="text-xs text-on-surface-variant mt-1">
+                Ventana oficial de pago
+              </span>
             </div>
           </div>
         </div>
@@ -251,30 +312,30 @@ export function FinanceScreen() {
         {/* Navigation Tabs */}
         <div className="flex items-center gap-2 border-b border-surface-container pb-2">
           <button
-            onClick={() => setActiveTab('settlement')}
+            onClick={() => setActiveTab("settlement")}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-              activeTab === 'settlement'
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-on-surface-variant hover:bg-surface-container'
+              activeTab === "settlement"
+                ? "bg-primary text-white shadow-sm"
+                : "text-on-surface-variant hover:bg-surface-container"
             }`}
           >
             <span>Liquidaciones Finales (Completados)</span>
             <span className="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-white text-[10px]">
-              {requests.filter((r) => r.type === 'settlement').length}
+              {requests.filter((r) => r.type === "settlement").length}
             </span>
           </button>
 
           <button
-            onClick={() => setActiveTab('advance')}
+            onClick={() => setActiveTab("advance")}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all ${
-              activeTab === 'advance'
-                ? 'bg-primary text-white shadow-sm'
-                : 'text-on-surface-variant hover:bg-surface-container'
+              activeTab === "advance"
+                ? "bg-primary text-white shadow-sm"
+                : "text-on-surface-variant hover:bg-surface-container"
             }`}
           >
             <span>Solicitudes de Adelanto (Publicados)</span>
             <span className="ml-1 px-2 py-0.5 rounded-full bg-white/20 text-white text-[10px]">
-              {requests.filter((r) => r.type === 'advance').length}
+              {requests.filter((r) => r.type === "advance").length}
             </span>
           </button>
         </div>
@@ -297,19 +358,32 @@ export function FinanceScreen() {
               <tbody className="divide-y divide-surface-container text-xs">
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-on-surface-variant">
+                    <td
+                      colSpan={7}
+                      className="py-12 text-center text-on-surface-variant"
+                    >
                       <div className="flex flex-col items-center justify-center gap-2">
                         <FileText className="w-8 h-8 text-on-surface-variant/40" />
-                        <span className="font-semibold text-sm">No hay solicitudes de {activeTab === 'settlement' ? 'liquidación' : 'adelanto'}</span>
+                        <span className="font-semibold text-sm">
+                          No hay solicitudes de{" "}
+                          {activeTab === "settlement"
+                            ? "liquidación"
+                            : "adelanto"}
+                        </span>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   filtered.map((req) => (
-                    <tr key={req.id} className="hover:bg-surface-container-low/40 transition-colors">
+                    <tr
+                      key={req.id}
+                      className="hover:bg-surface-container-low/40 transition-colors"
+                    >
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col">
-                          <span className="font-bold text-on-surface text-sm">{req.eventTitle}</span>
+                          <span className="font-bold text-on-surface text-sm">
+                            {req.eventTitle}
+                          </span>
                           <span className="text-[11px] text-primary font-mono font-bold">
                             {req.code} • {req.requestedDate}
                           </span>
@@ -318,18 +392,29 @@ export function FinanceScreen() {
 
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-on-surface">{req.organizerName}</span>
+                          <span className="font-semibold text-on-surface">
+                            {req.organizerName}
+                          </span>
                           <span className="text-[11px] text-on-surface-variant font-mono">
-                            {req.organizerDocumentType}: {req.organizerDocumentNumber}
+                            {req.organizerDocumentType}:{" "}
+                            {req.organizerDocumentNumber}
                           </span>
                           <div className="flex items-center gap-1.5 mt-0.5">
-                            <span className="font-bold text-[11px] text-primary">{req.bankName}</span>
-                            <span className="text-[11px] text-on-surface font-mono">Cta: {req.bankAccountNumber}</span>
+                            <span className="font-bold text-[11px] text-primary">
+                              {req.bankName}
+                            </span>
+                            <span className="text-[11px] text-on-surface font-mono">
+                              Cta: {req.bankAccountNumber}
+                            </span>
                           </div>
                           {req.bankAccountCci ? (
-                            <span className="text-[10px] text-on-surface-variant font-mono">CCI: {req.bankAccountCci}</span>
+                            <span className="text-[10px] text-on-surface-variant font-mono">
+                              CCI: {req.bankAccountCci}
+                            </span>
                           ) : (
-                            <span className="text-[10px] text-amber-700 italic">Directo BCP (Sin CCI)</span>
+                            <span className="text-[10px] text-amber-700 italic">
+                              Directo BCP (Sin CCI)
+                            </span>
                           )}
                         </div>
                       </td>
@@ -347,12 +432,12 @@ export function FinanceScreen() {
                       </td>
 
                       <td className="py-3.5 px-4 text-center">
-                        {req.status === 'pending' && (
+                        {req.status === "pending" && (
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
                             En Revisión
                           </span>
                         )}
-                        {req.status === 'paid' && (
+                        {req.status === "paid" && (
                           <div className="flex flex-col items-center">
                             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                               Liquidado & Pagado
@@ -364,7 +449,7 @@ export function FinanceScreen() {
                             )}
                           </div>
                         )}
-                        {req.status === 'rejected' && (
+                        {req.status === "rejected" && (
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-200">
                             Rechazado
                           </span>
@@ -380,7 +465,7 @@ export function FinanceScreen() {
                             <Eye className="w-3.5 h-3.5" />
                             <span>Auditar</span>
                           </button>
-                          {req.status === 'pending' && (
+                          {req.status === "pending" && (
                             <button
                               onClick={() => openAuditModal(req)}
                               className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm flex items-center gap-1"
@@ -412,7 +497,9 @@ export function FinanceScreen() {
               {/* Drawer Header */}
               <div className="flex items-center justify-between border-b border-surface-container pb-4">
                 <div>
-                  <span className="text-[11px] text-primary font-mono font-bold tracking-wider">{selectedReq.code}</span>
+                  <span className="text-[11px] text-primary font-mono font-bold tracking-wider">
+                    {selectedReq.code}
+                  </span>
                   <h3 className="text-lg font-black text-on-surface mt-0.5 tracking-tight">
                     Auditoría Financiera y Despacho
                   </h3>
@@ -433,15 +520,23 @@ export function FinanceScreen() {
                   </span>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Evento:</span>
-                    <span className="font-bold text-on-surface text-right">{selectedReq.eventTitle}</span>
+                    <span className="font-bold text-on-surface text-right">
+                      {selectedReq.eventTitle}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Código:</span>
-                    <span className="font-mono text-on-surface">{selectedReq.eventCode}</span>
+                    <span className="font-mono text-on-surface">
+                      {selectedReq.eventCode}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-on-surface-variant">Entradas Vendidas:</span>
-                    <span className="font-bold text-on-surface">{selectedReq.totalTicketsSold} tickets</span>
+                    <span className="text-on-surface-variant">
+                      Entradas Vendidas:
+                    </span>
+                    <span className="font-bold text-on-surface">
+                      {selectedReq.totalTicketsSold} tickets
+                    </span>
                   </div>
                 </div>
 
@@ -451,10 +546,14 @@ export function FinanceScreen() {
                   </span>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Titular:</span>
-                    <span className="font-bold text-on-surface text-right">{selectedReq.organizerName}</span>
+                    <span className="font-bold text-on-surface text-right">
+                      {selectedReq.organizerName}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-on-surface-variant">{selectedReq.organizerDocumentType}:</span>
+                    <span className="text-on-surface-variant">
+                      {selectedReq.organizerDocumentType}:
+                    </span>
                     <span className="font-mono font-bold text-primary flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                       {selectedReq.organizerDocumentNumber}
@@ -462,7 +561,9 @@ export function FinanceScreen() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Solicitado:</span>
-                    <span className="text-on-surface">{selectedReq.requestedDate}</span>
+                    <span className="text-on-surface">
+                      {selectedReq.requestedDate}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -481,29 +582,44 @@ export function FinanceScreen() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div className="bg-white p-3 rounded-lg border border-blue-100">
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Banco Destino:</span>
-                    <span className="font-extrabold text-sm text-on-surface">{selectedReq.bankName}</span>
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                      Banco Destino:
+                    </span>
+                    <span className="font-extrabold text-sm text-on-surface">
+                      {selectedReq.bankName}
+                    </span>
                   </div>
 
                   <div className="bg-white p-3 rounded-lg border border-blue-100">
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Titular de la Cuenta:</span>
-                    <span className="font-bold text-xs text-on-surface">{selectedReq.bankAccountHolder}</span>
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                      Titular de la Cuenta:
+                    </span>
+                    <span className="font-bold text-xs text-on-surface">
+                      {selectedReq.bankAccountHolder}
+                    </span>
                   </div>
 
                   <div className="bg-white p-3 rounded-lg border border-blue-100 flex items-center justify-between">
                     <div>
-                      <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Número de Cuenta:</span>
+                      <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                        Número de Cuenta:
+                      </span>
                       <span className="font-mono font-extrabold text-sm text-primary select-all">
                         {selectedReq.bankAccountNumber}
                       </span>
                     </div>
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(selectedReq.bankAccountNumber, 'account')}
+                      onClick={() =>
+                        copyToClipboard(
+                          selectedReq.bankAccountNumber,
+                          "account",
+                        )
+                      }
                       className="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
                       title="Copiar N° de Cuenta"
                     >
-                      {copiedField === 'account' ? (
+                      {copiedField === "account" ? (
                         <CheckIcon className="w-4 h-4 text-emerald-600" />
                       ) : (
                         <Copy className="w-4 h-4" />
@@ -513,7 +629,9 @@ export function FinanceScreen() {
 
                   <div className="bg-white p-3 rounded-lg border border-blue-100 flex items-center justify-between">
                     <div>
-                      <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Código Interbancario (CCI):</span>
+                      <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                        Código Interbancario (CCI):
+                      </span>
                       {selectedReq.bankAccountCci ? (
                         <span className="font-mono font-extrabold text-xs text-on-surface select-all">
                           {selectedReq.bankAccountCci}
@@ -527,11 +645,13 @@ export function FinanceScreen() {
                     {selectedReq.bankAccountCci && (
                       <button
                         type="button"
-                        onClick={() => copyToClipboard(selectedReq.bankAccountCci!, 'cci')}
+                        onClick={() =>
+                          copyToClipboard(selectedReq.bankAccountCci!, "cci")
+                        }
                         className="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
                         title="Copiar CCI"
                       >
-                        {copiedField === 'cci' ? (
+                        {copiedField === "cci" ? (
                           <CheckIcon className="w-4 h-4 text-emerald-600" />
                         ) : (
                           <Copy className="w-4 h-4" />
@@ -545,22 +665,37 @@ export function FinanceScreen() {
               {/* Montos */}
               <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Recaudación Bruta en Escrow:</span>
-                  <span className="font-mono font-bold text-on-surface">{selectedReq.grossAccumulatedFormatted}</span>
+                  <span className="text-on-surface-variant">
+                    Recaudación Bruta en Escrow:
+                  </span>
+                  <span className="font-mono font-bold text-on-surface">
+                    {selectedReq.grossAccumulatedFormatted}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Comisión del Servicio QPH:</span>
-                  <span className="font-mono font-bold text-red-600">-{selectedReq.platformFeeFormatted}</span>
+                  <span className="text-on-surface-variant">
+                    Comisión del Servicio QPH:
+                  </span>
+                  <span className="font-mono font-bold text-red-600">
+                    -{selectedReq.platformFeeFormatted}
+                  </span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-surface-container">
-                  <span className="font-bold text-sm text-on-surface">Monto Neto a Transferir:</span>
-                  <span className="font-mono font-extrabold text-lg text-primary">{selectedReq.requestedAmountFormatted}</span>
+                  <span className="font-bold text-sm text-on-surface">
+                    Monto Neto a Transferir:
+                  </span>
+                  <span className="font-mono font-extrabold text-lg text-primary">
+                    {selectedReq.requestedAmountFormatted}
+                  </span>
                 </div>
               </div>
 
               {/* Formulario de Pago o Info si ya está pagado */}
-              {selectedReq.status === 'pending' ? (
-                <form onSubmit={handleProcessPay} className="space-y-4 pt-2 border-t border-surface-container">
+              {selectedReq.status === "pending" ? (
+                <form
+                  onSubmit={handleProcessPay}
+                  className="space-y-4 pt-2 border-t border-surface-container"
+                >
                   <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
                     <span>Registrar Transferencia Bancaria Completada</span>
@@ -610,7 +745,7 @@ export function FinanceScreen() {
                       type="button"
                       onClick={() => {
                         setRejectModalItem(selectedReq);
-                        setRejectReason('');
+                        setRejectReason("");
                       }}
                       className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-bold transition-colors"
                     >
@@ -630,7 +765,11 @@ export function FinanceScreen() {
                         className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 disabled:opacity-50 transition-all"
                       >
                         <CheckCircle className="w-4 h-4" />
-                        <span>{isSubmittingPay ? 'Procesando...' : 'Confirmar y Despachar'}</span>
+                        <span>
+                          {isSubmittingPay
+                            ? "Procesando..."
+                            : "Confirmar y Despachar"}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -643,12 +782,14 @@ export function FinanceScreen() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                     <div>
-                      <span className="font-semibold">N° Operación:</span>{' '}
-                      <span className="font-mono">{selectedReq.transferReference || 'N/A'}</span>
+                      <span className="font-semibold">N° Operación:</span>{" "}
+                      <span className="font-mono">
+                        {selectedReq.transferReference || "N/A"}
+                      </span>
                     </div>
                     <div>
-                      <span className="font-semibold">Fecha de Pago:</span>{' '}
-                      <span>{selectedReq.paidDate || '-'}</span>
+                      <span className="font-semibold">Fecha de Pago:</span>{" "}
+                      <span>{selectedReq.paidDate || "-"}</span>
                     </div>
                   </div>
                   {selectedReq.transferVoucherUrl && (
@@ -666,7 +807,8 @@ export function FinanceScreen() {
                   )}
                   {selectedReq.notes && (
                     <p className="text-[11px] text-on-surface-variant pt-1 border-t border-emerald-200">
-                      <span className="font-semibold">Notas:</span> {selectedReq.notes}
+                      <span className="font-semibold">Notas:</span>{" "}
+                      {selectedReq.notes}
                     </p>
                   )}
                 </div>
@@ -679,15 +821,21 @@ export function FinanceScreen() {
       {/* MODAL DE RECHAZO */}
       {rejectModalItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-deep-slate/60 backdrop-blur-sm" onClick={() => setRejectModalItem(null)}></div>
+          <div
+            className="absolute inset-0 bg-deep-slate/60 backdrop-blur-sm"
+            onClick={() => setRejectModalItem(null)}
+          ></div>
           <div className="relative w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-2xl border border-surface-container p-6 z-10 space-y-4 text-xs">
             <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
               <AlertTriangle className="w-5 h-5" />
               <h3>Rechazar Liquidación de Evento</h3>
             </div>
             <p className="text-on-surface-variant">
-              Indica la razón por la cual se rechaza la liquidación del evento{' '}
-              <strong className="text-on-surface">{rejectModalItem.eventTitle}</strong>. El promotor será notificado para corregir sus datos bancarios.
+              Indica la razón por la cual se rechaza la liquidación del evento{" "}
+              <strong className="text-on-surface">
+                {rejectModalItem.eventTitle}
+              </strong>
+              . El promotor será notificado para corregir sus datos bancarios.
             </p>
 
             <form onSubmit={handleProcessReject} className="space-y-4">
@@ -718,7 +866,7 @@ export function FinanceScreen() {
                   disabled={isSubmittingReject}
                   className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold disabled:opacity-50"
                 >
-                  {isSubmittingReject ? 'Rechazando...' : 'Confirmar Rechazo'}
+                  {isSubmittingReject ? "Rechazando..." : "Confirmar Rechazo"}
                 </button>
               </div>
             </form>

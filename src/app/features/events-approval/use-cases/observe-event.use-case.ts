@@ -1,6 +1,6 @@
-import { ResultAsync } from 'neverthrow';
-import { DomainError } from '@/app/shared/errors/domain-error';
-import { EventApprovalRepository } from '../repositories/event-approval.repository';
+import { ResultAsync } from "neverthrow";
+import { DomainError } from "@/app/shared/errors/domain-error";
+import { EventApprovalRepository } from "../repositories/event-approval.repository";
 
 export class ObserveEventUseCase {
   constructor(private readonly repository: EventApprovalRepository) {}

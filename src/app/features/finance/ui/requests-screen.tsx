@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   getFinanceRequestsUseCase,
   markFinanceRequestPaidUseCase,
   rejectFinanceRequestUseCase,
   FinanceRequestItem,
-} from '@/app/features/finance';
+} from "@/app/features/finance";
 import {
   CreditCard,
   CalendarCheck,
@@ -24,34 +24,47 @@ import {
   AlertTriangle,
   RefreshCw,
   Clock,
-} from 'lucide-react';
-import { VoucherUploader } from '@/app/shared/components/voucher-uploader';
+} from "lucide-react";
+import { VoucherUploader } from "@/app/shared/components/voucher-uploader";
 
 export function RequestsScreen() {
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [items, setItems] = useState<FinanceRequestItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedAudit, setSelectedAudit] = useState<FinanceRequestItem | null>(null);
-  const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [selectedAudit, setSelectedAudit] = useState<FinanceRequestItem | null>(
+    null,
+  );
+  const [feedbackMessage, setFeedbackMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
 
   // Estados del modal de pago/despacho
-  const [transferReference, setTransferReference] = useState('');
-  const [transferVoucherUrl, setTransferVoucherUrl] = useState('');
-  const [paymentNotes, setPaymentNotes] = useState('');
+  const [transferReference, setTransferReference] = useState("");
+  const [transferVoucherUrl, setTransferVoucherUrl] = useState("");
+  const [paymentNotes, setPaymentNotes] = useState("");
   const [isSubmittingPay, setIsSubmittingPay] = useState(false);
 
   // Estados del modal de rechazo
-  const [rejectModalItem, setRejectModalItem] = useState<FinanceRequestItem | null>(null);
-  const [rejectReason, setRejectReason] = useState('');
+  const [rejectModalItem, setRejectModalItem] =
+    useState<FinanceRequestItem | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
   const [isSubmittingReject, setIsSubmittingReject] = useState(false);
 
   const loadRequests = async () => {
     setIsLoading(true);
-    const result = await getFinanceRequestsUseCase.execute(filterStatus, searchQuery);
+    const result = await getFinanceRequestsUseCase.execute(
+      filterStatus,
+      searchQuery,
+    );
     result.match(
       (data) => setItems(data),
-      (err) => setFeedbackMessage({ type: 'error', text: `Error al cargar liquidaciones: ${err.message}` })
+      (err) =>
+        setFeedbackMessage({
+          type: "error",
+          text: `Error al cargar liquidaciones: ${err.message}`,
+        }),
     );
     setIsLoading(false);
   };
@@ -67,38 +80,47 @@ export function RequestsScreen() {
 
   const openAuditModal = (item: FinanceRequestItem) => {
     setSelectedAudit(item);
-    setTransferReference(item.transferReference || '');
-    setTransferVoucherUrl(item.transferVoucherUrl || '');
-    setPaymentNotes('');
+    setTransferReference(item.transferReference || "");
+    setTransferVoucherUrl(item.transferVoucherUrl || "");
+    setPaymentNotes("");
   };
 
   const handleProcessPay = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAudit) return;
     if (!transferReference.trim()) {
-      setFeedbackMessage({ type: 'error', text: 'El número de operación bancaria es obligatorio para liquidar.' });
+      setFeedbackMessage({
+        type: "error",
+        text: "El número de operación bancaria es obligatorio para liquidar.",
+      });
       return;
     }
 
     setIsSubmittingPay(true);
-    const result = await markFinanceRequestPaidUseCase.execute(selectedAudit.id, {
-      transferReference: transferReference.trim(),
-      transferVoucherUrl: transferVoucherUrl.trim() || undefined,
-      notes: paymentNotes.trim() || undefined,
-    });
+    const result = await markFinanceRequestPaidUseCase.execute(
+      selectedAudit.id,
+      {
+        transferReference: transferReference.trim(),
+        transferVoucherUrl: transferVoucherUrl.trim() || undefined,
+        notes: paymentNotes.trim() || undefined,
+      },
+    );
 
     result.match(
       () => {
         setFeedbackMessage({
-          type: 'success',
+          type: "success",
           text: `Liquidación ${selectedAudit.code} despachada y pagada exitosamente.`,
         });
         setSelectedAudit(null);
         loadRequests();
       },
       (err) => {
-        setFeedbackMessage({ type: 'error', text: `Error al pagar: ${err.message}` });
-      }
+        setFeedbackMessage({
+          type: "error",
+          text: `Error al pagar: ${err.message}`,
+        });
+      },
     );
     setIsSubmittingPay(false);
   };
@@ -107,38 +129,47 @@ export function RequestsScreen() {
     e.preventDefault();
     if (!rejectModalItem) return;
     if (!rejectReason.trim()) {
-      setFeedbackMessage({ type: 'error', text: 'Debe ingresar un motivo para rechazar la liquidación.' });
+      setFeedbackMessage({
+        type: "error",
+        text: "Debe ingresar un motivo para rechazar la liquidación.",
+      });
       return;
     }
 
     setIsSubmittingReject(true);
-    const result = await rejectFinanceRequestUseCase.execute(rejectModalItem.id, {
-      reason: rejectReason.trim(),
-    });
+    const result = await rejectFinanceRequestUseCase.execute(
+      rejectModalItem.id,
+      {
+        reason: rejectReason.trim(),
+      },
+    );
 
     result.match(
       () => {
         setFeedbackMessage({
-          type: 'success',
+          type: "success",
           text: `Liquidación ${rejectModalItem.code} fue rechazada correctamente.`,
         });
         setRejectModalItem(null);
         setSelectedAudit(null);
-        setRejectReason('');
+        setRejectReason("");
         loadRequests();
       },
       (err) => {
-        setFeedbackMessage({ type: 'error', text: `Error al rechazar: ${err.message}` });
-      }
+        setFeedbackMessage({
+          type: "error",
+          text: `Error al rechazar: ${err.message}`,
+        });
+      },
     );
     setIsSubmittingReject(false);
   };
 
   // KPIs calculados
-  const pendingItems = items.filter((it) => it.status === 'pending');
-  const paidItems = items.filter((it) => it.status === 'paid');
+  const pendingItems = items.filter((it) => it.status === "pending");
+  const paidItems = items.filter((it) => it.status === "paid");
   const totalPendingAmount = pendingItems.reduce((acc, curr) => {
-    const raw = curr.requestedAmountFormatted.replace(/[^\d.]/g, '');
+    const raw = curr.requestedAmountFormatted.replace(/[^\d.]/g, "");
     return acc + (parseFloat(raw) || 0);
   }, 0);
 
@@ -149,7 +180,9 @@ export function RequestsScreen() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-2 text-on-surface-variant text-xs font-bold uppercase tracking-wider">
-              <span className="text-primary font-bold">Finanzas & Tesorería QPH</span>
+              <span className="text-primary font-bold">
+                Finanzas & Tesorería QPH
+              </span>
               <span>•</span>
               <span>Auditoría de Liquidaciones</span>
             </div>
@@ -157,7 +190,8 @@ export function RequestsScreen() {
               Despacho de Liquidaciones de Eventos
             </h1>
             <p className="text-xs text-on-surface-variant">
-              Audita las ventas finales de eventos concluidos, valida cuentas bancarias/RUC y registra la transferencia definitiva.
+              Audita las ventas finales de eventos concluidos, valida cuentas
+              bancarias/RUC y registra la transferencia definitiva.
             </p>
           </div>
 
@@ -166,7 +200,9 @@ export function RequestsScreen() {
               onClick={() => loadRequests()}
               className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-surface-container text-on-surface font-semibold text-xs border border-surface-container hover:bg-surface-container-high transition-all"
             >
-              <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+              />
               <span>Actualizar</span>
             </button>
             <Link
@@ -182,13 +218,16 @@ export function RequestsScreen() {
         {feedbackMessage && (
           <div
             className={`p-4 rounded-xl text-xs font-semibold flex items-center justify-between border ${
-              feedbackMessage.type === 'success'
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                : 'bg-red-50 text-red-800 border-red-200'
+              feedbackMessage.type === "success"
+                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                : "bg-red-50 text-red-800 border-red-200"
             }`}
           >
             <span>{feedbackMessage.text}</span>
-            <button onClick={() => setFeedbackMessage(null)} className="hover:opacity-75">
+            <button
+              onClick={() => setFeedbackMessage(null)}
+              className="hover:opacity-75"
+            >
               <X className="w-4 h-4" />
             </button>
           </div>
@@ -198,14 +237,20 @@ export function RequestsScreen() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">Pendiente Desembolso</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Pendiente Desembolso
+              </span>
               <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-800">
                 <Clock className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-3 flex flex-col">
               <span className="text-2xl font-black text-on-surface">
-                S/ {totalPendingAmount.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                S/{" "}
+                {totalPendingAmount.toLocaleString("es-PE", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </span>
               <div className="flex items-center gap-1.5 mt-1 text-xs text-amber-800 font-semibold">
                 <span className="w-2 h-2 rounded-full bg-amber-500"></span>
@@ -216,40 +261,58 @@ export function RequestsScreen() {
 
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">Eventos en Revisión</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Eventos en Revisión
+              </span>
               <div className="w-8 h-8 rounded-lg bg-primary-fixed flex items-center justify-center text-primary">
                 <CalendarCheck className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-3 flex flex-col">
-              <span className="text-2xl font-black text-on-surface">{pendingItems.length} solicitudes</span>
-              <span className="text-xs text-on-surface-variant mt-1">Concluidos y con ventas auditadas</span>
+              <span className="text-2xl font-black text-on-surface">
+                {pendingItems.length} solicitudes
+              </span>
+              <span className="text-xs text-on-surface-variant mt-1">
+                Concluidos y con ventas auditadas
+              </span>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">Total Liquidados</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                Total Liquidados
+              </span>
               <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-800">
                 <CheckCircle className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-3 flex flex-col">
-              <span className="text-2xl font-black text-emerald-800">{paidItems.length} pagos</span>
-              <span className="text-xs text-on-surface-variant mt-1">Transferencias confirmadas</span>
+              <span className="text-2xl font-black text-emerald-800">
+                {paidItems.length} pagos
+              </span>
+              <span className="text-xs text-on-surface-variant mt-1">
+                Transferencias confirmadas
+              </span>
             </div>
           </div>
 
           <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm border border-surface-container flex flex-col justify-between">
             <div className="flex items-center justify-between text-on-surface-variant">
-              <span className="text-xs font-bold uppercase tracking-wider">SLA de Tesorería</span>
+              <span className="text-xs font-bold uppercase tracking-wider">
+                SLA de Tesorería
+              </span>
               <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-700">
                 <Timer className="w-4 h-4" />
               </div>
             </div>
             <div className="mt-3 flex flex-col">
-              <span className="text-2xl font-black text-blue-700">24h - 72h</span>
-              <span className="text-xs text-on-surface-variant mt-1">Ventana oficial de pago</span>
+              <span className="text-2xl font-black text-blue-700">
+                24h - 72h
+              </span>
+              <span className="text-xs text-on-surface-variant mt-1">
+                Ventana oficial de pago
+              </span>
             </div>
           </div>
         </div>
@@ -258,38 +321,41 @@ export function RequestsScreen() {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-surface-container pb-2">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setFilterStatus('all')}
+              onClick={() => setFilterStatus("all")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === 'all'
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'text-on-surface-variant hover:bg-surface-container'
+                filterStatus === "all"
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-on-surface-variant hover:bg-surface-container"
               }`}
             >
               Todas ({items.length})
             </button>
             <button
-              onClick={() => setFilterStatus('pending')}
+              onClick={() => setFilterStatus("pending")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === 'pending'
-                  ? 'bg-amber-600 text-white shadow-sm'
-                  : 'text-on-surface-variant hover:bg-surface-container'
+                filterStatus === "pending"
+                  ? "bg-amber-600 text-white shadow-sm"
+                  : "text-on-surface-variant hover:bg-surface-container"
               }`}
             >
               En Revisión ({pendingItems.length})
             </button>
             <button
-              onClick={() => setFilterStatus('paid')}
+              onClick={() => setFilterStatus("paid")}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-                filterStatus === 'paid'
-                  ? 'bg-emerald-600 text-white shadow-sm'
-                  : 'text-on-surface-variant hover:bg-surface-container'
+                filterStatus === "paid"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-on-surface-variant hover:bg-surface-container"
               }`}
             >
               Liquidadas ({paidItems.length})
             </button>
           </div>
 
-          <form onSubmit={handleSearchSubmit} className="flex items-center gap-2">
+          <form
+            onSubmit={handleSearchSubmit}
+            className="flex items-center gap-2"
+          >
             <div className="relative">
               <Search className="w-4 h-4 text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -327,20 +393,33 @@ export function RequestsScreen() {
               <tbody className="divide-y divide-surface-container text-xs">
                 {items.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="py-12 text-center text-on-surface-variant">
+                    <td
+                      colSpan={7}
+                      className="py-12 text-center text-on-surface-variant"
+                    >
                       <div className="flex flex-col items-center justify-center gap-2">
                         <CalendarCheck className="w-8 h-8 text-on-surface-variant/40" />
-                        <span className="font-semibold text-sm">No hay solicitudes de liquidación registradas</span>
-                        <span className="text-xs">Los eventos concluidos aparecerán aquí cuando el promotor solicite el cierre.</span>
+                        <span className="font-semibold text-sm">
+                          No hay solicitudes de liquidación registradas
+                        </span>
+                        <span className="text-xs">
+                          Los eventos concluidos aparecerán aquí cuando el
+                          promotor solicite el cierre.
+                        </span>
                       </div>
                     </td>
                   </tr>
                 ) : (
                   items.map((sol) => (
-                    <tr key={sol.id} className="hover:bg-surface-container-low/40 transition-colors">
+                    <tr
+                      key={sol.id}
+                      className="hover:bg-surface-container-low/40 transition-colors"
+                    >
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col">
-                          <span className="font-bold text-on-surface text-sm">{sol.eventTitle}</span>
+                          <span className="font-bold text-on-surface text-sm">
+                            {sol.eventTitle}
+                          </span>
                           <span className="text-[11px] text-primary font-mono font-bold">
                             {sol.code} • {sol.requestedDate}
                           </span>
@@ -349,9 +428,12 @@ export function RequestsScreen() {
 
                       <td className="py-3.5 px-4">
                         <div className="flex flex-col">
-                          <span className="font-semibold text-on-surface">{sol.organizerName}</span>
+                          <span className="font-semibold text-on-surface">
+                            {sol.organizerName}
+                          </span>
                           <span className="text-[11px] text-on-surface-variant font-mono">
-                            {sol.organizerDocumentType}: {sol.organizerDocumentNumber}
+                            {sol.organizerDocumentType}:{" "}
+                            {sol.organizerDocumentNumber}
                           </span>
                         </div>
                       </td>
@@ -393,12 +475,12 @@ export function RequestsScreen() {
                       </td>
 
                       <td className="py-3.5 px-4 text-center">
-                        {sol.status === 'pending' && (
+                        {sol.status === "pending" && (
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
                             En Revisión
                           </span>
                         )}
-                        {sol.status === 'paid' && (
+                        {sol.status === "paid" && (
                           <div className="flex flex-col items-center">
                             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
                               Liquidado & Pagado
@@ -410,7 +492,7 @@ export function RequestsScreen() {
                             )}
                           </div>
                         )}
-                        {sol.status === 'rejected' && (
+                        {sol.status === "rejected" && (
                           <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-200">
                             Rechazado
                           </span>
@@ -426,7 +508,7 @@ export function RequestsScreen() {
                             <Eye className="w-3.5 h-3.5" />
                             <span>Auditar</span>
                           </button>
-                          {sol.status === 'pending' && (
+                          {sol.status === "pending" && (
                             <>
                               <button
                                 onClick={() => openAuditModal(sol)}
@@ -438,7 +520,7 @@ export function RequestsScreen() {
                               <button
                                 onClick={() => {
                                   setRejectModalItem(sol);
-                                  setRejectReason('');
+                                  setRejectReason("");
                                 }}
                                 className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
                                 title="Rechazar liquidación"
@@ -470,7 +552,9 @@ export function RequestsScreen() {
               {/* Header Drawer */}
               <div className="flex items-center justify-between border-b border-surface-container pb-4">
                 <div>
-                  <span className="text-[11px] text-primary font-mono font-bold tracking-wider">{selectedAudit.code}</span>
+                  <span className="text-[11px] text-primary font-mono font-bold tracking-wider">
+                    {selectedAudit.code}
+                  </span>
                   <h3 className="text-lg font-black text-on-surface mt-0.5 tracking-tight">
                     Auditoría y Despacho Bancario
                   </h3>
@@ -491,15 +575,25 @@ export function RequestsScreen() {
                   </span>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Título:</span>
-                    <span className="font-bold text-on-surface text-right">{selectedAudit.eventTitle}</span>
+                    <span className="font-bold text-on-surface text-right">
+                      {selectedAudit.eventTitle}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-on-surface-variant">Código Evento:</span>
-                    <span className="font-mono text-on-surface">{selectedAudit.eventCode}</span>
+                    <span className="text-on-surface-variant">
+                      Código Evento:
+                    </span>
+                    <span className="font-mono text-on-surface">
+                      {selectedAudit.eventCode}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-on-surface-variant">Entradas Vendidas:</span>
-                    <span className="font-bold text-on-surface">{selectedAudit.totalTicketsSold} tickets</span>
+                    <span className="text-on-surface-variant">
+                      Entradas Vendidas:
+                    </span>
+                    <span className="font-bold text-on-surface">
+                      {selectedAudit.totalTicketsSold} tickets
+                    </span>
                   </div>
                 </div>
 
@@ -509,10 +603,14 @@ export function RequestsScreen() {
                   </span>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Titular:</span>
-                    <span className="font-bold text-on-surface text-right">{selectedAudit.organizerName}</span>
+                    <span className="font-bold text-on-surface text-right">
+                      {selectedAudit.organizerName}
+                    </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-on-surface-variant">{selectedAudit.organizerDocumentType}:</span>
+                    <span className="text-on-surface-variant">
+                      {selectedAudit.organizerDocumentType}:
+                    </span>
                     <span className="font-mono font-bold text-primary flex items-center gap-1">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                       {selectedAudit.organizerDocumentNumber}
@@ -520,7 +618,9 @@ export function RequestsScreen() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-on-surface-variant">Solicitado:</span>
-                    <span className="text-on-surface">{selectedAudit.requestedDate}</span>
+                    <span className="text-on-surface">
+                      {selectedAudit.requestedDate}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -533,23 +633,41 @@ export function RequestsScreen() {
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   <div className="bg-white p-3 rounded-lg border border-blue-100">
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Banco:</span>
-                    <span className="font-extrabold text-sm text-on-surface">{selectedAudit.bankName}</span>
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                      Banco:
+                    </span>
+                    <span className="font-extrabold text-sm text-on-surface">
+                      {selectedAudit.bankName}
+                    </span>
                   </div>
                   <div className="bg-white p-3 rounded-lg border border-blue-100">
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Titular de Cuenta:</span>
-                    <span className="font-semibold text-xs text-on-surface">{selectedAudit.bankAccountHolder}</span>
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                      Titular de Cuenta:
+                    </span>
+                    <span className="font-semibold text-xs text-on-surface">
+                      {selectedAudit.bankAccountHolder}
+                    </span>
                   </div>
                   <div className="bg-white p-3 rounded-lg border border-blue-100">
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Número de Cuenta:</span>
-                    <span className="font-mono font-bold text-sm text-primary select-all">{selectedAudit.bankAccountNumber}</span>
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                      Número de Cuenta:
+                    </span>
+                    <span className="font-mono font-bold text-sm text-primary select-all">
+                      {selectedAudit.bankAccountNumber}
+                    </span>
                   </div>
                   <div className="bg-white p-3 rounded-lg border border-blue-100">
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Código Interbancario (CCI):</span>
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">
+                      Código Interbancario (CCI):
+                    </span>
                     {selectedAudit.bankAccountCci ? (
-                      <span className="font-mono font-bold text-xs text-on-surface select-all">{selectedAudit.bankAccountCci}</span>
+                      <span className="font-mono font-bold text-xs text-on-surface select-all">
+                        {selectedAudit.bankAccountCci}
+                      </span>
                     ) : (
-                      <span className="text-[11px] text-amber-800 italic font-semibold">Cuenta Directa BCP (No aplica CCI)</span>
+                      <span className="text-[11px] text-amber-800 italic font-semibold">
+                        Cuenta Directa BCP (No aplica CCI)
+                      </span>
                     )}
                   </div>
                 </div>
@@ -561,22 +679,37 @@ export function RequestsScreen() {
                   Liquidación de Fondos
                 </span>
                 <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Recaudación Bruta Total:</span>
-                  <span className="font-mono font-bold text-on-surface">{selectedAudit.grossAccumulatedFormatted}</span>
+                  <span className="text-on-surface-variant">
+                    Recaudación Bruta Total:
+                  </span>
+                  <span className="font-mono font-bold text-on-surface">
+                    {selectedAudit.grossAccumulatedFormatted}
+                  </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Comisión del Servicio Ticketera (QPH):</span>
-                  <span className="font-mono font-bold text-red-600">-{selectedAudit.platformFeeFormatted}</span>
+                  <span className="text-on-surface-variant">
+                    Comisión del Servicio Ticketera (QPH):
+                  </span>
+                  <span className="font-mono font-bold text-red-600">
+                    -{selectedAudit.platformFeeFormatted}
+                  </span>
                 </div>
                 <div className="flex justify-between pt-2 border-t border-surface-container">
-                  <span className="font-bold text-sm text-on-surface">Monto Neto a Transferir:</span>
-                  <span className="font-mono font-extrabold text-lg text-primary">{selectedAudit.requestedAmountFormatted}</span>
+                  <span className="font-bold text-sm text-on-surface">
+                    Monto Neto a Transferir:
+                  </span>
+                  <span className="font-mono font-extrabold text-lg text-primary">
+                    {selectedAudit.requestedAmountFormatted}
+                  </span>
                 </div>
               </div>
 
               {/* Formulario de Pago o Info si ya está pagado */}
-              {selectedAudit.status === 'pending' ? (
-                <form onSubmit={handleProcessPay} className="space-y-4 pt-2 border-t border-surface-container">
+              {selectedAudit.status === "pending" ? (
+                <form
+                  onSubmit={handleProcessPay}
+                  className="space-y-4 pt-2 border-t border-surface-container"
+                >
                   <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
                     <CheckCircle className="w-4 h-4 text-emerald-600" />
                     <span>Registrar Despacho de Transferencia Bancaria</span>
@@ -626,7 +759,7 @@ export function RequestsScreen() {
                       type="button"
                       onClick={() => {
                         setRejectModalItem(selectedAudit);
-                        setRejectReason('');
+                        setRejectReason("");
                       }}
                       className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-bold transition-colors"
                     >
@@ -646,7 +779,11 @@ export function RequestsScreen() {
                         className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 disabled:opacity-50 transition-all"
                       >
                         <CheckCircle className="w-4 h-4" />
-                        <span>{isSubmittingPay ? 'Procesando...' : 'Confirmar y Pagar'}</span>
+                        <span>
+                          {isSubmittingPay
+                            ? "Procesando..."
+                            : "Confirmar y Pagar"}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -659,12 +796,14 @@ export function RequestsScreen() {
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
                     <div>
-                      <span className="font-semibold">N° Operación:</span>{' '}
-                      <span className="font-mono">{selectedAudit.transferReference || 'N/A'}</span>
+                      <span className="font-semibold">N° Operación:</span>{" "}
+                      <span className="font-mono">
+                        {selectedAudit.transferReference || "N/A"}
+                      </span>
                     </div>
                     <div>
-                      <span className="font-semibold">Fecha de Pago:</span>{' '}
-                      <span>{selectedAudit.paidDate || '-'}</span>
+                      <span className="font-semibold">Fecha de Pago:</span>{" "}
+                      <span>{selectedAudit.paidDate || "-"}</span>
                     </div>
                   </div>
                   {selectedAudit.transferVoucherUrl && (
@@ -682,7 +821,8 @@ export function RequestsScreen() {
                   )}
                   {selectedAudit.notes && (
                     <p className="text-[11px] text-on-surface-variant pt-1 border-t border-emerald-200">
-                      <span className="font-semibold">Notas:</span> {selectedAudit.notes}
+                      <span className="font-semibold">Notas:</span>{" "}
+                      {selectedAudit.notes}
                     </p>
                   )}
                 </div>
@@ -695,15 +835,21 @@ export function RequestsScreen() {
       {/* MODAL DE RECHAZO */}
       {rejectModalItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-deep-slate/60 backdrop-blur-sm" onClick={() => setRejectModalItem(null)}></div>
+          <div
+            className="absolute inset-0 bg-deep-slate/60 backdrop-blur-sm"
+            onClick={() => setRejectModalItem(null)}
+          ></div>
           <div className="relative w-full max-w-md bg-surface-container-lowest rounded-2xl shadow-2xl border border-surface-container p-6 z-10 space-y-4 text-xs">
             <div className="flex items-center gap-2 text-red-600 font-bold text-sm">
               <AlertTriangle className="w-5 h-5" />
               <h3>Rechazar Liquidación de Evento</h3>
             </div>
             <p className="text-on-surface-variant">
-              Indica la razón por la cual se rechaza la liquidación del evento{' '}
-              <strong className="text-on-surface">{rejectModalItem.eventTitle}</strong>. El promotor será notificado para corregir sus datos.
+              Indica la razón por la cual se rechaza la liquidación del evento{" "}
+              <strong className="text-on-surface">
+                {rejectModalItem.eventTitle}
+              </strong>
+              . El promotor será notificado para corregir sus datos.
             </p>
 
             <form onSubmit={handleProcessReject} className="space-y-4">
@@ -734,7 +880,7 @@ export function RequestsScreen() {
                   disabled={isSubmittingReject}
                   className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold disabled:opacity-50"
                 >
-                  {isSubmittingReject ? 'Rechazando...' : 'Confirmar Rechazo'}
+                  {isSubmittingReject ? "Rechazando..." : "Confirmar Rechazo"}
                 </button>
               </div>
             </form>

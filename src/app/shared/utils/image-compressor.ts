@@ -8,7 +8,7 @@ export interface ImageCompressionOptions {
   maxWidth?: number;
   maxHeight?: number;
   quality?: number; // 0.1 a 1.0 (0.82 es el estándar óptimo de balance visual)
-  targetFormat?: 'image/webp' | 'image/jpeg';
+  targetFormat?: "image/webp" | "image/jpeg";
 }
 
 export interface CompressionResult {
@@ -24,20 +24,27 @@ export interface CompressionResult {
  * Resuelve las dimensiones máximas recomendadas según la carpeta de destino
  */
 export function getDefaultDimensionsForFolder(
-  folder?: 'banners' | 'croquis' | 'gallery' | 'landings' | 'organizers' | 'vouchers' | string
+  folder?:
+    | "banners"
+    | "croquis"
+    | "gallery"
+    | "landings"
+    | "organizers"
+    | "vouchers"
+    | string,
 ): { maxWidth: number; maxHeight: number } {
   switch (folder) {
-    case 'banners':
+    case "banners":
       return { maxWidth: 1920, maxHeight: 1080 };
-    case 'vouchers':
+    case "vouchers":
       return { maxWidth: 1600, maxHeight: 2000 };
-    case 'croquis':
+    case "croquis":
       return { maxWidth: 1600, maxHeight: 1200 };
-    case 'gallery':
+    case "gallery":
       return { maxWidth: 1440, maxHeight: 1080 };
-    case 'organizers':
+    case "organizers":
       return { maxWidth: 800, maxHeight: 800 };
-    case 'landings':
+    case "landings":
       return { maxWidth: 1920, maxHeight: 1080 };
     default:
       return { maxWidth: 1600, maxHeight: 1200 };
@@ -49,10 +56,10 @@ export function getDefaultDimensionsForFolder(
  */
 export async function compressImage(
   file: File,
-  options: ImageCompressionOptions = {}
+  options: ImageCompressionOptions = {},
 ): Promise<CompressionResult> {
   // 1. Verificaciones tempranas y SSR guard
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return {
       file,
       originalSize: file.size,
@@ -65,10 +72,10 @@ export async function compressImage(
 
   // 2. Si es un SVG o PDF, conservarlo intacto
   if (
-    file.type === 'image/svg+xml' ||
-    file.type === 'application/pdf' ||
-    file.name.toLowerCase().endsWith('.svg') ||
-    file.name.toLowerCase().endsWith('.pdf')
+    file.type === "image/svg+xml" ||
+    file.type === "application/pdf" ||
+    file.name.toLowerCase().endsWith(".svg") ||
+    file.name.toLowerCase().endsWith(".pdf")
   ) {
     return {
       file,
@@ -84,7 +91,7 @@ export async function compressImage(
     maxWidth = 1600,
     maxHeight = 2000,
     quality = 0.82,
-    targetFormat = 'image/webp',
+    targetFormat = "image/webp",
   } = options;
 
   try {
@@ -97,7 +104,7 @@ export async function compressImage(
     const originalHeight = img.naturalHeight || img.height;
 
     if (!originalWidth || !originalHeight) {
-      throw new Error('Dimensiones inválidas de la imagen.');
+      throw new Error("Dimensiones inválidas de la imagen.");
     }
 
     // 4. Calcular nuevas dimensiones manteniendo la relación de aspecto exacta
@@ -115,17 +122,17 @@ export async function compressImage(
     }
 
     // 5. Dibujar en un canvas oculto con suavizado de alta calidad
-    const canvas = document.createElement('canvas');
+    const canvas = document.createElement("canvas");
     canvas.width = targetWidth;
     canvas.height = targetHeight;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
-      throw new Error('No se pudo obtener el contexto 2D del Canvas.');
+      throw new Error("No se pudo obtener el contexto 2D del Canvas.");
     }
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
+    ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
 
     // 6. Exportar a Blob WebP optimizado
@@ -134,7 +141,7 @@ export async function compressImage(
     });
 
     if (!blob) {
-      throw new Error('Error al serializar el Blob comprimido.');
+      throw new Error("Error al serializar el Blob comprimido.");
     }
 
     // Si por alguna razón extrema el archivo comprimido fuera más grande que el original,
@@ -151,8 +158,11 @@ export async function compressImage(
     }
 
     // 7. Generar nuevo nombre con extensión .webp
-    const baseName = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
-    const cleanBaseName = baseName.replace(/[^a-zA-Z0-9_-]/g, '-').toLowerCase();
+    const baseName =
+      file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
+    const cleanBaseName = baseName
+      .replace(/[^a-zA-Z0-9_-]/g, "-")
+      .toLowerCase();
     const newFileName = `${cleanBaseName}.webp`;
 
     const compressedFile = new File([blob], newFileName, {
@@ -160,7 +170,10 @@ export async function compressImage(
       lastModified: Date.now(),
     });
 
-    const ratio = Math.max(0, Math.round(((file.size - compressedFile.size) / file.size) * 100));
+    const ratio = Math.max(
+      0,
+      Math.round(((file.size - compressedFile.size) / file.size) * 100),
+    );
 
     return {
       file: compressedFile,
@@ -171,7 +184,10 @@ export async function compressImage(
       height: targetHeight,
     };
   } catch (error) {
-    console.warn('[ImageCompressor] Fallback al archivo original debido a un error:', error);
+    console.warn(
+      "[ImageCompressor] Fallback al archivo original debido a un error:",
+      error,
+    );
     return {
       file,
       originalSize: file.size,
@@ -189,9 +205,10 @@ export async function compressImage(
 function loadImageAsync(url: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
     img.onload = () => resolve(img);
-    img.onerror = (e) => reject(new Error('Fallo al cargar imagen para compresión: ' + e));
+    img.onerror = (e) =>
+      reject(new Error("Fallo al cargar imagen para compresión: " + e));
     img.src = url;
   });
 }

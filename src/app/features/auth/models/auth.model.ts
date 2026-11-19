@@ -11,4 +11,3 @@ export interface AuthSession {
   user: AdminSessionUser;
   expiresInSeconds: number;
 }
-
