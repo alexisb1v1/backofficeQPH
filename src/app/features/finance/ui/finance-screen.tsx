@@ -400,276 +400,278 @@ export function FinanceScreen() {
         </div>
       </div>
 
-      {/* MODAL AUDITORÍA Y DESPACHO DE PAGO CON COPIADO DE CUENTA */}
+      {/* DRAWER LATERAL DERECHO AUDITORÍA Y DESPACHO DE PAGO (FULL-HEIGHT) */}
       {selectedReq && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex justify-end">
           <div
-            className="absolute inset-0 bg-deep-slate/60 backdrop-blur-sm"
+            className="fixed inset-0 bg-deep-slate/60 backdrop-blur-sm transition-opacity"
             onClick={() => setSelectedReq(null)}
           ></div>
-          <div className="relative w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl border border-surface-container p-6 z-10 space-y-5 text-xs max-h-[90vh] overflow-y-auto">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-surface-container pb-3">
-              <div>
-                <span className="text-[11px] text-primary font-mono font-bold">{selectedReq.code}</span>
-                <h3 className="text-base font-bold text-on-surface mt-0.5">
-                  Auditoría Financiera y Despacho de Transferencia
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedReq(null)}
-                className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Evento y Organizador */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
-                <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
-                  Evento Asociado
-                </span>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Evento:</span>
-                  <span className="font-bold text-on-surface text-right">{selectedReq.eventTitle}</span>
+          <div className="relative w-full max-w-2xl bg-surface-container-lowest h-full shadow-2xl border-l border-surface-container p-6 sm:p-8 z-10 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+            <div className="space-y-6">
+              {/* Drawer Header */}
+              <div className="flex items-center justify-between border-b border-surface-container pb-4">
+                <div>
+                  <span className="text-[11px] text-primary font-mono font-bold tracking-wider">{selectedReq.code}</span>
+                  <h3 className="text-lg font-black text-on-surface mt-0.5 tracking-tight">
+                    Auditoría Financiera y Despacho
+                  </h3>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Código:</span>
-                  <span className="font-mono text-on-surface">{selectedReq.eventCode}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Entradas Vendidas:</span>
-                  <span className="font-bold text-on-surface">{selectedReq.totalTicketsSold} tickets</span>
-                </div>
+                <button
+                  onClick={() => setSelectedReq(null)}
+                  className="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
-                <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
-                  Organizador & Fiscal
-                </span>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Titular:</span>
-                  <span className="font-bold text-on-surface text-right">{selectedReq.organizerName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">{selectedReq.organizerDocumentType}:</span>
-                  <span className="font-mono font-bold text-primary flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    {selectedReq.organizerDocumentNumber}
+              {/* Evento y Organizador */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
+                  <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
+                    Evento Asociado
                   </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Solicitado:</span>
-                  <span className="text-on-surface">{selectedReq.requestedDate}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* DATOS BANCARIOS PARA TRANSFERENCIA (DESTACADOS CON BOTONES DE COPIAR) */}
-            <div className="bg-blue-50/60 border border-blue-200/80 p-4 rounded-xl space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-                  <Building2 className="w-4 h-4 text-blue-700" />
-                  Datos Bancarios para Efectuar la Transferencia
-                </span>
-                <span className="text-[10px] text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full font-semibold">
-                  Validado por Promotor
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div className="bg-white p-3 rounded-lg border border-blue-100">
-                  <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Banco Destino:</span>
-                  <span className="font-extrabold text-sm text-on-surface">{selectedReq.bankName}</span>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Evento:</span>
+                    <span className="font-bold text-on-surface text-right">{selectedReq.eventTitle}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Código:</span>
+                    <span className="font-mono text-on-surface">{selectedReq.eventCode}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Entradas Vendidas:</span>
+                    <span className="font-bold text-on-surface">{selectedReq.totalTicketsSold} tickets</span>
+                  </div>
                 </div>
 
-                <div className="bg-white p-3 rounded-lg border border-blue-100">
-                  <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Titular de la Cuenta:</span>
-                  <span className="font-bold text-xs text-on-surface">{selectedReq.bankAccountHolder}</span>
-                </div>
-
-                <div className="bg-white p-3 rounded-lg border border-blue-100 flex items-center justify-between">
-                  <div>
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Número de Cuenta:</span>
-                    <span className="font-mono font-extrabold text-sm text-primary select-all">
-                      {selectedReq.bankAccountNumber}
+                <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
+                  <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
+                    Organizador & Fiscal
+                  </span>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Titular:</span>
+                    <span className="font-bold text-on-surface text-right">{selectedReq.organizerName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">{selectedReq.organizerDocumentType}:</span>
+                    <span className="font-mono font-bold text-primary flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      {selectedReq.organizerDocumentNumber}
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => copyToClipboard(selectedReq.bankAccountNumber, 'account')}
-                    className="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                    title="Copiar N° de Cuenta"
-                  >
-                    {copiedField === 'account' ? (
-                      <CheckIcon className="w-4 h-4 text-emerald-600" />
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Solicitado:</span>
+                    <span className="text-on-surface">{selectedReq.requestedDate}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* DATOS BANCARIOS PARA TRANSFERENCIA (DESTACADOS CON BOTONES DE COPIAR) */}
+              <div className="bg-blue-50/60 border border-blue-200/80 p-4 rounded-xl space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-blue-700" />
+                    Datos Bancarios para Efectuar la Transferencia
+                  </span>
+                  <span className="text-[10px] text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full font-semibold">
+                    Validado por Promotor
+                  </span>
                 </div>
 
-                <div className="bg-white p-3 rounded-lg border border-blue-100 flex items-center justify-between">
-                  <div>
-                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Código Interbancario (CCI):</span>
-                    {selectedReq.bankAccountCci ? (
-                      <span className="font-mono font-extrabold text-xs text-on-surface select-all">
-                        {selectedReq.bankAccountCci}
-                      </span>
-                    ) : (
-                      <span className="text-[11px] text-amber-800 font-semibold italic">
-                        Cuenta BCP Directa (No aplica CCI)
-                      </span>
-                    )}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="bg-white p-3 rounded-lg border border-blue-100">
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Banco Destino:</span>
+                    <span className="font-extrabold text-sm text-on-surface">{selectedReq.bankName}</span>
                   </div>
-                  {selectedReq.bankAccountCci && (
+
+                  <div className="bg-white p-3 rounded-lg border border-blue-100">
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Titular de la Cuenta:</span>
+                    <span className="font-bold text-xs text-on-surface">{selectedReq.bankAccountHolder}</span>
+                  </div>
+
+                  <div className="bg-white p-3 rounded-lg border border-blue-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Número de Cuenta:</span>
+                      <span className="font-mono font-extrabold text-sm text-primary select-all">
+                        {selectedReq.bankAccountNumber}
+                      </span>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(selectedReq.bankAccountCci!, 'cci')}
+                      onClick={() => copyToClipboard(selectedReq.bankAccountNumber, 'account')}
                       className="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
-                      title="Copiar CCI"
+                      title="Copiar N° de Cuenta"
                     >
-                      {copiedField === 'cci' ? (
+                      {copiedField === 'account' ? (
                         <CheckIcon className="w-4 h-4 text-emerald-600" />
                       ) : (
                         <Copy className="w-4 h-4" />
                       )}
                     </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Montos */}
-            <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Recaudación Bruta en Escrow:</span>
-                <span className="font-mono font-bold text-on-surface">{selectedReq.grossAccumulatedFormatted}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Comisión del Servicio QPH:</span>
-                <span className="font-mono font-bold text-red-600">-{selectedReq.platformFeeFormatted}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-surface-container">
-                <span className="font-bold text-sm text-on-surface">Monto Neto a Transferir:</span>
-                <span className="font-mono font-extrabold text-lg text-primary">{selectedReq.requestedAmountFormatted}</span>
-              </div>
-            </div>
-
-            {/* Formulario de Pago o Info si ya está pagado */}
-            {selectedReq.status === 'pending' ? (
-              <form onSubmit={handleProcessPay} className="space-y-4 pt-2 border-t border-surface-container">
-                <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
-                  <CheckCircle className="w-4 h-4 text-emerald-600" />
-                  <span>Registrar Transferencia Bancaria Completada</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-bold text-on-surface mb-1">
-                      N° de Operación Bancaria *
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Ej. OP-19842104"
-                      value={transferReference}
-                      onChange={(e) => setTransferReference(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container font-mono text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                    />
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-on-surface mb-1">
-                      Comprobante Bancario (Voucher R2)
-                    </label>
-                    <VoucherUploader
-                      value={transferVoucherUrl}
-                      onChange={(url) => setTransferVoucherUrl(url)}
-                      folder="vouchers"
-                    />
+
+                  <div className="bg-white p-3 rounded-lg border border-blue-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Código Interbancario (CCI):</span>
+                      {selectedReq.bankAccountCci ? (
+                        <span className="font-mono font-extrabold text-xs text-on-surface select-all">
+                          {selectedReq.bankAccountCci}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-amber-800 font-semibold italic">
+                          Cuenta BCP Directa (No aplica CCI)
+                        </span>
+                      )}
+                    </div>
+                    {selectedReq.bankAccountCci && (
+                      <button
+                        type="button"
+                        onClick={() => copyToClipboard(selectedReq.bankAccountCci!, 'cci')}
+                        className="p-1.5 rounded-md hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors"
+                        title="Copiar CCI"
+                      >
+                        {copiedField === 'cci' ? (
+                          <CheckIcon className="w-4 h-4 text-emerald-600" />
+                        ) : (
+                          <Copy className="w-4 h-4" />
+                        )}
+                      </button>
+                    )}
                   </div>
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-[11px] font-bold text-on-surface mb-1">
-                    Notas de Auditoría Interna (Opcional)
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Detalles adicionales sobre la transferencia..."
-                    value={paymentNotes}
-                    onChange={(e) => setPaymentNotes(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
+              {/* Montos */}
+              <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-on-surface-variant">Recaudación Bruta en Escrow:</span>
+                  <span className="font-mono font-bold text-on-surface">{selectedReq.grossAccumulatedFormatted}</span>
                 </div>
+                <div className="flex justify-between">
+                  <span className="text-on-surface-variant">Comisión del Servicio QPH:</span>
+                  <span className="font-mono font-bold text-red-600">-{selectedReq.platformFeeFormatted}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-surface-container">
+                  <span className="font-bold text-sm text-on-surface">Monto Neto a Transferir:</span>
+                  <span className="font-mono font-extrabold text-lg text-primary">{selectedReq.requestedAmountFormatted}</span>
+                </div>
+              </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRejectModalItem(selectedReq);
-                      setRejectReason('');
-                    }}
-                    className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-bold transition-colors"
-                  >
-                    Rechazar Solicitud
-                  </button>
-                  <div className="flex gap-2">
+              {/* Formulario de Pago o Info si ya está pagado */}
+              {selectedReq.status === 'pending' ? (
+                <form onSubmit={handleProcessPay} className="space-y-4 pt-2 border-t border-surface-container">
+                  <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
+                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <span>Registrar Transferencia Bancaria Completada</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-on-surface mb-1">
+                        N° de Operación Bancaria *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej. OP-19842104"
+                        value={transferReference}
+                        onChange={(e) => setTransferReference(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container font-mono text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-on-surface mb-1">
+                        Comprobante Bancario (Voucher R2)
+                      </label>
+                      <VoucherUploader
+                        value={transferVoucherUrl}
+                        onChange={(url) => setTransferVoucherUrl(url)}
+                        folder="vouchers"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-on-surface mb-1">
+                      Notas de Auditoría Interna (Opcional)
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="Detalles adicionales sobre la transferencia..."
+                      value={paymentNotes}
+                      onChange={(e) => setPaymentNotes(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-surface-container">
                     <button
                       type="button"
-                      onClick={() => setSelectedReq(null)}
-                      className="px-4 py-2 rounded-xl bg-surface-container text-xs font-semibold"
+                      onClick={() => {
+                        setRejectModalItem(selectedReq);
+                        setRejectReason('');
+                      }}
+                      className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-bold transition-colors"
                     >
-                      Cancelar
+                      Rechazar Solicitud
                     </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmittingPay}
-                      className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 disabled:opacity-50"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                      <span>{isSubmittingPay ? 'Procesando...' : 'Confirmar y Despachar'}</span>
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedReq(null)}
+                        className="px-4 py-2 rounded-xl bg-surface-container text-xs font-semibold hover:bg-surface-container-high transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSubmittingPay}
+                        className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 disabled:opacity-50 transition-all"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        <span>{isSubmittingPay ? 'Procesando...' : 'Confirmar y Despachar'}</span>
+                      </button>
+                    </div>
                   </div>
+                </form>
+              ) : (
+                <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-emerald-900">
+                  <div className="flex items-center gap-2 font-bold">
+                    <CheckCircle className="w-4 h-4 text-emerald-700" />
+                    <span>Liquidación Pagada y Conciliada</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    <div>
+                      <span className="font-semibold">N° Operación:</span>{' '}
+                      <span className="font-mono">{selectedReq.transferReference || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Fecha de Pago:</span>{' '}
+                      <span>{selectedReq.paidDate || '-'}</span>
+                    </div>
+                  </div>
+                  {selectedReq.transferVoucherUrl && (
+                    <div className="pt-1">
+                      <a
+                        href={selectedReq.transferVoucherUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-primary hover:underline font-bold text-[11px]"
+                      >
+                        <span>Ver voucher de transferencia bancaria</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
+                  {selectedReq.notes && (
+                    <p className="text-[11px] text-on-surface-variant pt-1 border-t border-emerald-200">
+                      <span className="font-semibold">Notas:</span> {selectedReq.notes}
+                    </p>
+                  )}
                 </div>
-              </form>
-            ) : (
-              <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-emerald-900">
-                <div className="flex items-center gap-2 font-bold">
-                  <CheckCircle className="w-4 h-4 text-emerald-700" />
-                  <span>Liquidación Pagada y Conciliada</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                  <div>
-                    <span className="font-semibold">N° Operación:</span>{' '}
-                    <span className="font-mono">{selectedReq.transferReference || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Fecha de Pago:</span>{' '}
-                    <span>{selectedReq.paidDate || '-'}</span>
-                  </div>
-                </div>
-                {selectedReq.transferVoucherUrl && (
-                  <div className="pt-1">
-                    <a
-                      href={selectedReq.transferVoucherUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-primary hover:underline font-bold text-[11px]"
-                    >
-                      <span>Ver voucher de transferencia bancaria</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
-                )}
-                {selectedReq.notes && (
-                  <p className="text-[11px] text-on-surface-variant pt-1 border-t border-emerald-200">
-                    <span className="font-semibold">Notas:</span> {selectedReq.notes}
-                  </p>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}

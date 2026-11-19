@@ -458,231 +458,236 @@ export function RequestsScreen() {
         </div>
       </div>
 
-      {/* MODAL AUDITORÍA Y DESPACHO DE PAGO */}
+      {/* DRAWER LATERAL DERECHO AUDITORÍA Y DESPACHO DE PAGO (FULL-HEIGHT) */}
       {selectedAudit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-deep-slate/60 backdrop-blur-sm" onClick={() => setSelectedAudit(null)}></div>
-          <div className="relative w-full max-w-2xl bg-surface-container-lowest rounded-2xl shadow-2xl border border-surface-container p-6 z-10 space-y-5 text-xs max-h-[90vh] overflow-y-auto">
-            {/* Header Modal */}
-            <div className="flex items-center justify-between border-b border-surface-container pb-3">
-              <div>
-                <span className="text-[11px] text-primary font-mono font-bold">{selectedAudit.code}</span>
-                <h3 className="text-base font-bold text-on-surface mt-0.5">
-                  Auditoría y Despacho Bancario
-                </h3>
-              </div>
-              <button
-                onClick={() => setSelectedAudit(null)}
-                className="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Datos del Evento y Promotor */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
-                <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
-                  Datos del Evento
-                </span>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Título:</span>
-                  <span className="font-bold text-on-surface text-right">{selectedAudit.eventTitle}</span>
+        <div className="fixed inset-0 z-50 flex justify-end">
+          <div
+            className="fixed inset-0 bg-deep-slate/60 backdrop-blur-sm transition-opacity"
+            onClick={() => setSelectedAudit(null)}
+          ></div>
+          <div className="relative w-full max-w-2xl bg-surface-container-lowest h-full shadow-2xl border-l border-surface-container p-6 sm:p-8 z-10 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+            <div className="space-y-6">
+              {/* Header Drawer */}
+              <div className="flex items-center justify-between border-b border-surface-container pb-4">
+                <div>
+                  <span className="text-[11px] text-primary font-mono font-bold tracking-wider">{selectedAudit.code}</span>
+                  <h3 className="text-lg font-black text-on-surface mt-0.5 tracking-tight">
+                    Auditoría y Despacho Bancario
+                  </h3>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Código Evento:</span>
-                  <span className="font-mono text-on-surface">{selectedAudit.eventCode}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Entradas Vendidas:</span>
-                  <span className="font-bold text-on-surface">{selectedAudit.totalTicketsSold} tickets</span>
-                </div>
+                <button
+                  onClick={() => setSelectedAudit(null)}
+                  className="w-9 h-9 rounded-xl bg-surface-container flex items-center justify-center text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
-                <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
-                  Organizador & Fiscal
-                </span>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Titular:</span>
-                  <span className="font-bold text-on-surface text-right">{selectedAudit.organizerName}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-on-surface-variant">{selectedAudit.organizerDocumentType}:</span>
-                  <span className="font-mono font-bold text-primary flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                    {selectedAudit.organizerDocumentNumber}
+              {/* Datos del Evento y Promotor */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
+                  <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
+                    Datos del Evento
                   </span>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Título:</span>
+                    <span className="font-bold text-on-surface text-right">{selectedAudit.eventTitle}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Código Evento:</span>
+                    <span className="font-mono text-on-surface">{selectedAudit.eventCode}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Entradas Vendidas:</span>
+                    <span className="font-bold text-on-surface">{selectedAudit.totalTicketsSold} tickets</span>
+                  </div>
+                </div>
+
+                <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
+                  <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
+                    Organizador & Fiscal
+                  </span>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Titular:</span>
+                    <span className="font-bold text-on-surface text-right">{selectedAudit.organizerName}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">{selectedAudit.organizerDocumentType}:</span>
+                    <span className="font-mono font-bold text-primary flex items-center gap-1">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      {selectedAudit.organizerDocumentNumber}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-on-surface-variant">Solicitado:</span>
+                    <span className="text-on-surface">{selectedAudit.requestedDate}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Datos Bancarios Verificados */}
+              <div className="bg-blue-50/60 border border-blue-200/80 p-4 rounded-xl space-y-2.5">
+                <span className="text-[11px] font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                  <Building2 className="w-4 h-4 text-blue-700" />
+                  Destino Bancario Autorizado
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="bg-white p-3 rounded-lg border border-blue-100">
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Banco:</span>
+                    <span className="font-extrabold text-sm text-on-surface">{selectedAudit.bankName}</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-blue-100">
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Titular de Cuenta:</span>
+                    <span className="font-semibold text-xs text-on-surface">{selectedAudit.bankAccountHolder}</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-blue-100">
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Número de Cuenta:</span>
+                    <span className="font-mono font-bold text-sm text-primary select-all">{selectedAudit.bankAccountNumber}</span>
+                  </div>
+                  <div className="bg-white p-3 rounded-lg border border-blue-100">
+                    <span className="text-on-surface-variant block text-[10px] uppercase font-bold">Código Interbancario (CCI):</span>
+                    {selectedAudit.bankAccountCci ? (
+                      <span className="font-mono font-bold text-xs text-on-surface select-all">{selectedAudit.bankAccountCci}</span>
+                    ) : (
+                      <span className="text-[11px] text-amber-800 italic font-semibold">Cuenta Directa BCP (No aplica CCI)</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Desglose Financiero */}
+              <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
+                <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
+                  Liquidación de Fondos
+                </span>
+                <div className="flex justify-between">
+                  <span className="text-on-surface-variant">Recaudación Bruta Total:</span>
+                  <span className="font-mono font-bold text-on-surface">{selectedAudit.grossAccumulatedFormatted}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-on-surface-variant">Solicitado:</span>
-                  <span className="text-on-surface">{selectedAudit.requestedDate}</span>
+                  <span className="text-on-surface-variant">Comisión del Servicio Ticketera (QPH):</span>
+                  <span className="font-mono font-bold text-red-600">-{selectedAudit.platformFeeFormatted}</span>
+                </div>
+                <div className="flex justify-between pt-2 border-t border-surface-container">
+                  <span className="font-bold text-sm text-on-surface">Monto Neto a Transferir:</span>
+                  <span className="font-mono font-extrabold text-lg text-primary">{selectedAudit.requestedAmountFormatted}</span>
                 </div>
               </div>
-            </div>
 
-            {/* Datos Bancarios Verificados */}
-            <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2.5">
-              <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
-                <Building2 className="w-4 h-4 text-primary" />
-                Destino Bancario Autorizado
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-                <div>
-                  <span className="text-on-surface-variant block text-[11px]">Banco:</span>
-                  <span className="font-bold text-sm text-on-surface">{selectedAudit.bankName}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block text-[11px]">Titular de Cuenta:</span>
-                  <span className="font-semibold text-on-surface">{selectedAudit.bankAccountHolder}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block text-[11px]">Número de Cuenta:</span>
-                  <span className="font-mono font-bold text-on-surface select-all">{selectedAudit.bankAccountNumber}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block text-[11px]">Código Interbancario (CCI):</span>
-                  {selectedAudit.bankAccountCci ? (
-                    <span className="font-mono font-bold text-on-surface select-all">{selectedAudit.bankAccountCci}</span>
-                  ) : (
-                    <span className="text-amber-700 italic font-medium">Cuenta Directa BCP (No aplica CCI)</span>
-                  )}
-                </div>
-              </div>
-            </div>
+              {/* Formulario de Pago o Info si ya está pagado */}
+              {selectedAudit.status === 'pending' ? (
+                <form onSubmit={handleProcessPay} className="space-y-4 pt-2 border-t border-surface-container">
+                  <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
+                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <span>Registrar Despacho de Transferencia Bancaria</span>
+                  </div>
 
-            {/* Desglose Financiero */}
-            <div className="bg-surface-container-low p-4 rounded-xl border border-surface-container space-y-2">
-              <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
-                Liquidación de Fondos
-              </span>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Recaudación Bruta Total:</span>
-                <span className="font-mono font-bold text-on-surface">{selectedAudit.grossAccumulatedFormatted}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-on-surface-variant">Comisión del Servicio Ticketera (QPH):</span>
-                <span className="font-mono font-bold text-red-600">-{selectedAudit.platformFeeFormatted}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t border-surface-container">
-                <span className="font-bold text-sm text-on-surface">Monto Neto a Transferir:</span>
-                <span className="font-mono font-extrabold text-lg text-primary">{selectedAudit.requestedAmountFormatted}</span>
-              </div>
-            </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-bold text-on-surface mb-1">
+                        N° de Operación Bancaria *
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Ej. OP-19842104"
+                        value={transferReference}
+                        onChange={(e) => setTransferReference(e.target.value)}
+                        required
+                        className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container font-mono text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-on-surface mb-1">
+                        Comprobante Bancario (Voucher R2)
+                      </label>
+                      <VoucherUploader
+                        value={transferVoucherUrl}
+                        onChange={(url) => setTransferVoucherUrl(url)}
+                        folder="vouchers"
+                      />
+                    </div>
+                  </div>
 
-            {/* Formulario de Pago o Info si ya está pagado */}
-            {selectedAudit.status === 'pending' ? (
-              <form onSubmit={handleProcessPay} className="space-y-4 pt-2 border-t border-surface-container">
-                <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
-                  <CheckCircle className="w-4 h-4 text-emerald-600" />
-                  <span>Registrar Despacho de Transferencia Bancaria</span>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[11px] font-bold text-on-surface mb-1">
-                      N° de Operación Bancaria *
+                      Notas de Auditoría Interna (Opcional)
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Ej. OP-19842104"
-                      value={transferReference}
-                      onChange={(e) => setTransferReference(e.target.value)}
-                      required
-                      className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container font-mono text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
+                    <textarea
+                      rows={2}
+                      placeholder="Detalles adicionales sobre la transferencia..."
+                      value={paymentNotes}
+                      onChange={(e) => setPaymentNotes(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
-                  <div>
-                    <label className="block text-[11px] font-bold text-on-surface mb-1">
-                      Comprobante Bancario (Voucher R2)
-                    </label>
-                    <VoucherUploader
-                      value={transferVoucherUrl}
-                      onChange={(url) => setTransferVoucherUrl(url)}
-                      folder="vouchers"
-                    />
-                  </div>
-                </div>
 
-                <div>
-                  <label className="block text-[11px] font-bold text-on-surface mb-1">
-                    Notas de Auditoría Interna (Opcional)
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Detalles adicionales sobre la transferencia..."
-                    value={paymentNotes}
-                    onChange={(e) => setPaymentNotes(e.target.value)}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-container border border-surface-container text-xs text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setRejectModalItem(selectedAudit);
-                      setRejectReason('');
-                    }}
-                    className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-bold transition-colors"
-                  >
-                    Rechazar Solicitud
-                  </button>
-                  <div className="flex gap-2">
+                  <div className="flex items-center justify-between pt-4 border-t border-surface-container">
                     <button
                       type="button"
-                      onClick={() => setSelectedAudit(null)}
-                      className="px-4 py-2 rounded-xl bg-surface-container text-xs font-semibold"
+                      onClick={() => {
+                        setRejectModalItem(selectedAudit);
+                        setRejectReason('');
+                      }}
+                      className="px-4 py-2 rounded-xl text-red-600 hover:bg-red-50 text-xs font-bold transition-colors"
                     >
-                      Cancelar
+                      Rechazar Solicitud
                     </button>
-                    <button
-                      type="submit"
-                      disabled={isSubmittingPay}
-                      className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 disabled:opacity-50"
-                    >
-                      <CheckCircle className="w-4 h-4" />
-                      <span>{isSubmittingPay ? 'Procesando...' : 'Confirmar y Pagar'}</span>
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedAudit(null)}
+                        className="px-4 py-2 rounded-xl bg-surface-container text-xs font-semibold hover:bg-surface-container-high transition-colors"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        disabled={isSubmittingPay}
+                        className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5 disabled:opacity-50 transition-all"
+                      >
+                        <CheckCircle className="w-4 h-4" />
+                        <span>{isSubmittingPay ? 'Procesando...' : 'Confirmar y Pagar'}</span>
+                      </button>
+                    </div>
                   </div>
+                </form>
+              ) : (
+                <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-emerald-900">
+                  <div className="flex items-center gap-2 font-bold">
+                    <CheckCircle className="w-4 h-4 text-emerald-700" />
+                    <span>Liquidación Pagada y Conciliada</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                    <div>
+                      <span className="font-semibold">N° Operación:</span>{' '}
+                      <span className="font-mono">{selectedAudit.transferReference || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span className="font-semibold">Fecha de Pago:</span>{' '}
+                      <span>{selectedAudit.paidDate || '-'}</span>
+                    </div>
+                  </div>
+                  {selectedAudit.transferVoucherUrl && (
+                    <div className="pt-1">
+                      <a
+                        href={selectedAudit.transferVoucherUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-primary hover:underline font-bold text-[11px]"
+                      >
+                        <span>Ver voucher de transferencia bancaria</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  )}
+                  {selectedAudit.notes && (
+                    <p className="text-[11px] text-on-surface-variant pt-1 border-t border-emerald-200">
+                      <span className="font-semibold">Notas:</span> {selectedAudit.notes}
+                    </p>
+                  )}
                 </div>
-              </form>
-            ) : (
-              <div className="bg-emerald-50 border border-emerald-200 p-4 rounded-xl space-y-2 text-emerald-900">
-                <div className="flex items-center gap-2 font-bold">
-                  <CheckCircle className="w-4 h-4 text-emerald-700" />
-                  <span>Liquidación Pagada y Conciliada</span>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-                  <div>
-                    <span className="font-semibold">N° Operación:</span>{' '}
-                    <span className="font-mono">{selectedAudit.transferReference || 'N/A'}</span>
-                  </div>
-                  <div>
-                    <span className="font-semibold">Fecha de Pago:</span>{' '}
-                    <span>{selectedAudit.paidDate || '-'}</span>
-                  </div>
-                </div>
-                {selectedAudit.transferVoucherUrl && (
-                  <div className="pt-1">
-                    <a
-                      href={selectedAudit.transferVoucherUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-primary hover:underline font-bold text-[11px]"
-                    >
-                      <span>Ver voucher de transferencia bancaria</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
-                )}
-                {selectedAudit.notes && (
-                  <p className="text-[11px] text-on-surface-variant pt-1 border-t border-emerald-200">
-                    <span className="font-semibold">Notas:</span> {selectedAudit.notes}
-                  </p>
-                )}
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       )}

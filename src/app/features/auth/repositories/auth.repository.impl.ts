@@ -41,16 +41,16 @@ export class AuthRepositoryImpl implements AuthRepository {
             (res.status === 401
               ? 'Usuario o contraseña incorrectos'
               : res.status === 403
-              ? 'Acceso denegado: Se requiere rol de Administrador para acceder al Backoffice'
-              : 'Error al iniciar sesión');
+                ? 'Acceso denegado: Se requiere rol de Administrador para acceder al Backoffice'
+                : 'Error al iniciar sesión');
 
           throw new DomainError(
             message,
             res.status === 401
               ? ERROR_CODES.UNAUTHORIZED.code
               : res.status === 403
-              ? ERROR_CODES.BUSINESS_RULE.code
-              : ERROR_CODES.NETWORK_ERROR.code,
+                ? ERROR_CODES.BUSINESS_RULE.code
+                : ERROR_CODES.NETWORK_ERROR.code,
           );
         }
 
@@ -77,12 +77,25 @@ export class AuthRepositoryImpl implements AuthRepository {
 
   logout(): ResultAsync<void, DomainError> {
     return ResultAsync.fromPromise(
-      Promise.resolve().then(() => {
-        removeCookie(AUTH_COOKIE_NAME);
-        if (typeof window !== 'undefined') {
-          localStorage.removeItem(AUTH_STORAGE_USER_KEY);
-        }
-      }),
+        (async () => {
+          try {
+            await fetch(`${this.baseUrl}/auth/logout`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-origin': 'backoffice',
+              },
+              credentials: 'include',
+              body: JSON.stringify({ origin: 'backoffice' }),
+            });
+          } catch {
+            // Si falla el endpoint, continuamos con la limpieza local
+          }
+          removeCookie(AUTH_COOKIE_NAME);
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem(AUTH_STORAGE_USER_KEY);
+          }
+      })(),
       (error) =>
         new DomainError(
           'Error al cerrar sesión',
